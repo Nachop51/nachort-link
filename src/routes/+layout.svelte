@@ -15,8 +15,6 @@
 	const handleClick = () => {
 		signOut()
 	}
-
-	console.log($page.data.session)
 </script>
 
 <svelte:head>
@@ -30,23 +28,9 @@
 	</div>
 	{#if $page.data.session?.user != null}
 		<div class="flex-none">
+			<a href="/dashboard" class="btn btn-ghost">Dashboard</a>
 			<div class="dropdown dropdown-end">
-				<button tabindex="0" class="btn btn-ghost focus:ring">Button</button>
-				<ul
-					role="menu"
-					class="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow"
-				>
-					<li class="card-body">
-						<span class="font-bold text-lg">8 Items</span>
-						<span class="text-info">Subtotal: $999</span>
-						<div class="card-actions">
-							<button class="btn btn-primary btn-block">View cart</button>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<div class="dropdown dropdown-end">
-				<button tabindex="0" class="btn btn-ghost btn-circle avatar focus:ring">
+				<button tabindex="0" class="btn btn-ghost btn-circle avatar">
 					<div class="w-10 rounded-full">
 						<img alt="Tailwind CSS Navbar component" src={$page.data.session.user.image} />
 					</div>
@@ -106,6 +90,6 @@
 	{/if}
 </div>
 
-<main class="flex items-center flex-col justify-start">
+<main class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
 	<slot />
 </main>

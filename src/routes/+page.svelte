@@ -1,19 +1,23 @@
 <script lang="ts">
-	import { page } from '$app/stores'
-	import { signIn } from '@auth/sveltekit/client'
+	let link = ''
+
+	const handleSumbit = () => {
+		console.log(link)
+	}
 </script>
 
-<h1>SvelteKit Auth Example</h1>
-<p>
-	{#if $page.data.session}
-		<span class="signedInText">
-			<small>Signed in as</small><br />
-			<strong>{$page.data.session.user?.name ?? 'User'}</strong>
-		</span>
-	{:else}
-		<span class="notSignedInText">You are not signed in</span>
-		<button on:click={() => signIn('github')}>Sign In with GitHub</button>
-	{/if}
-</p>
+<section class="bg-base-200 p-8 text-center rounded-lg">
+	<header class="mb-6">
+		<h1 class="text-4xl font-bold text-primary">Short your link!</h1>
+	</header>
 
-<a href="/protected">Protected route</a>
+	<form on:submit|preventDefault={handleSumbit}>
+		<input
+			class="input input-bordered w-full max-w-xs mb-4"
+			type="url"
+			bind:value={link}
+			placeholder="https://example.com"
+		/>
+		<button class="btn bg-base-300" type="submit">Shorten</button>
+	</form>
+</section>

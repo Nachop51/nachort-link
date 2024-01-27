@@ -1,9 +1,20 @@
 import { SvelteKitAuth } from '@auth/sveltekit'
 import GitHub from '@auth/sveltekit/providers/github'
+import { MongoDBAdapter } from '@auth/mongodb-adapter'
 // import Credentials from '@auth/core/providers/credentials'
 import { GITHUB_ID, GITHUB_SECRET } from '$env/static/private'
+import clientPromise from '$lib/server/mongodb'
 
 export const handle = SvelteKitAuth({
+	adapter: MongoDBAdapter(clientPromise, {
+		databaseName: 'nachort',
+		collections: {
+			Accounts: 'accounts',
+			Sessions: 'sessions',
+			Users: 'users',
+			VerificationTokens: 'verificationTokens'
+		}
+	}),
 	providers: [
 		GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET })
 
