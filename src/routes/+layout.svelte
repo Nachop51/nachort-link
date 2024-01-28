@@ -5,12 +5,20 @@
 	import { onMount } from 'svelte'
 
 	let dialogElement: HTMLDialogElement
-	let email: string
+	let handle: string
 	let password: string
 
 	onMount(() => {
 		dialogElement = document.getElementById('login-menu') as HTMLDialogElement
 	})
+
+	const handleSignIn = () => {
+		try {
+			signIn('credentials', { handle, password })
+		} catch {
+			console.log('Error')
+		}
+	}
 
 	const handleClick = () => {
 		signOut()
@@ -32,7 +40,17 @@
 			<div class="dropdown dropdown-end">
 				<button tabindex="0" class="btn btn-ghost btn-circle avatar">
 					<div class="w-10 rounded-full">
-						<img alt="Tailwind CSS Navbar component" src={$page.data.session.user.image} />
+						{#if $page.data.session.user.image == null}
+							<img
+								alt="Tailwind CSS Navbar component"
+								src="https://avatars.githubusercontent.com/u/25289561?v=4"
+							/>
+						{:else}
+							<img
+								alt="Tailwind CSS Navbar component"
+								src={`https://api.dicebear.com/7.x/${$page.data.session.user?.name ?? $page.data.session.user?.handle}.svg`}
+							/>
+						{/if}
 					</div>
 				</button>
 				<ul
@@ -63,8 +81,8 @@
 
 				<form class="flex flex-col">
 					<input
-						type="email"
-						bind:value={email}
+						type="text"
+						bind:value={handle}
 						placeholder="Type here"
 						class="input input-bordered w-full max-w-xs"
 					/>
@@ -74,9 +92,7 @@
 						placeholder="Type here"
 						class="input input-bordered w-full max-w-xs"
 					/>
-					<button class="btn btn-accent" on:click={() => signIn('credentials', { email, password })}
-						>Log in</button
-					>
+					<button class="btn btn-accent" on:click={handleSignIn}>Log in</button>
 				</form>
 
 				<p>Or sign in with:</p>

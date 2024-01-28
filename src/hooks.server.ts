@@ -1,9 +1,11 @@
 import { SvelteKitAuth } from '@auth/sveltekit'
 import GitHub from '@auth/sveltekit/providers/github'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
-// import Credentials from '@auth/core/providers/credentials'
+import Credentials from '@auth/core/providers/credentials'
 import { GITHUB_ID, GITHUB_SECRET } from '$env/static/private'
-import clientPromise from '$lib/server/mongodb'
+import clientPromise from '$lib/server/mongoPromise'
+import { getDBUser } from '$lib/server/mongo'
+import { fail } from '@sveltejs/kit'
 
 export const handle = SvelteKitAuth({
 	adapter: MongoDBAdapter(clientPromise, {
@@ -16,30 +18,31 @@ export const handle = SvelteKitAuth({
 		}
 	}),
 	providers: [
-		GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET })
+		GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
+		Credentials({
+			credentials: {
+				handle: {
+					type: 'text'
+				},
+				password: {
+					type: 'password'
+				}
+			},
+			authorize: async (credentials) => {
+				const pwHash = credentials.password
 
-		// Credentials({
-		// 	// You can specify which fields should be submitted, by adding keys to the `credentials` object.
-		// 	// e.g. domain, username, password, 2FA token, etc.
-		// 	credentials: {
-		// 		username: {},
-		// 		password: {}
-		// 	},
-		// 	authorize: async (credentials) => {
-		// 		const user = null
+				const user = await getDBUser(credentials.handle as string)
 
-		// 		// logic to salt and hash password
-		// 		// const pwHash = saltAndHashPassword(credentials.password)
-		// 		// logic to verify if user exists
-		// 		// user = await getUserFromDb(credentials.username, pwHash)
+				if (user == null) {
+					throw fail(400, { message: 'Wrong Credentials.' })
+				}
 
-		// 		if (!user) {
-		// 			throw new Error('User not found.')
-		// 		}
+				if (pwHash !== user.password) {
+					throw fail(400, { message: 'Wrong Credentials.' })
+				}
 
-		// 		// return json object with the user data
-		// 		return user
-		// 	}
-		// })
+				return user
+			}
+		})
 	]
 })
