@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { signIn, signOut } from '@auth/sveltekit/client'
-	import '../app.css'
 	import { page } from '$app/stores'
+	import { signIn, signOut } from '@auth/sveltekit/client'
 	import { onMount } from 'svelte'
+	import '../app.css'
+	import { RANDOM_AVATAR_URL } from '$lib/constants'
 
 	let dialogElement: HTMLDialogElement
 	let handle: string
@@ -20,7 +21,7 @@
 		}
 	}
 
-	const handleClick = () => {
+	const handleSignOut = () => {
 		signOut()
 	}
 </script>
@@ -30,7 +31,7 @@
 	<meta name="description" content="Short your links with Nachort Links in just one go." />
 </svelte:head>
 
-<div class="navbar bg-base-100">
+<nav class="navbar bg-base-100">
 	<div class="flex-1">
 		<a href="/" class="btn btn-ghost text-xl">Nachort Links</a>
 	</div>
@@ -40,15 +41,15 @@
 			<div class="dropdown dropdown-end">
 				<button tabindex="0" class="btn btn-ghost btn-circle avatar">
 					<div class="w-10 rounded-full">
-						{#if $page.data.session.user.image == null}
+						{#if $page.data.session.user?.image != null}
 							<img
-								alt="Tailwind CSS Navbar component"
-								src="https://avatars.githubusercontent.com/u/25289561?v=4"
+								alt={`${$page.data.session.user.name} github's profile`}
+								src={$page.data.session.user.image}
 							/>
 						{:else}
 							<img
-								alt="Tailwind CSS Navbar component"
-								src={`https://api.dicebear.com/7.x/${$page.data.session.user?.name ?? $page.data.session.user?.handle}.svg`}
+								alt={`${$page.data.session.user?.name ?? $page.data.session.user?.email ?? 'User'}'s profile`}
+								src={`${RANDOM_AVATAR_URL}${$page.data.session.user?.name ?? $page.data.session.user?.email ?? 'User'}.svg`}
 							/>
 						{/if}
 					</div>
@@ -64,7 +65,7 @@
 						</a>
 					</li>
 					<li>
-						<button on:click={handleClick}>Logout</button>
+						<button on:click={handleSignOut}>Logout</button>
 					</li>
 				</ul>
 			</div>
@@ -104,7 +105,7 @@
 			</div>
 		</dialog>
 	{/if}
-</div>
+</nav>
 
 <main class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
 	<slot />
