@@ -1,23 +1,36 @@
 <script lang="ts">
+	import '../app.css'
 	import { page } from '$app/stores'
 	import { signIn, signOut } from '@auth/sveltekit/client'
 	import { onMount } from 'svelte'
-	import '../app.css'
+	import { invalidateAll } from '$app/navigation'
 	import { RANDOM_AVATAR_URL } from '$lib/constants'
 
 	let dialogElement: HTMLDialogElement
 	let handle: string
 	let password: string
+	let err = false
 
 	onMount(() => {
 		dialogElement = document.getElementById('login-menu') as HTMLDialogElement
 	})
 
-	const handleSignIn = () => {
-		try {
-			signIn('credentials', { handle, password })
-		} catch {
-			console.log('Error')
+	const handleSignIn = async () => {
+		const res = await signIn('credentials', { handle, password, redirect: false })
+
+		if (res == null) {
+			err = true
+			return
+		}
+
+		const { url } = (await res.json()) as { url: string }
+
+		const params = new URLSearchParams(url.split('?')[1])
+
+		if (params.has('error')) {
+			err = true
+		} else {
+			invalidateAll()
 		}
 	}
 
@@ -43,7 +56,7 @@
 					<div class="w-10 rounded-full">
 						{#if $page.data.session.user?.image != null}
 							<img
-								alt={`${$page.data.session.user.name} github's profile`}
+								alt={`${$page.data.session.user.name} profile`}
 								src={$page.data.session.user.image}
 							/>
 						{:else}
@@ -95,6 +108,9 @@
 					/>
 					<button class="btn btn-accent" on:click={handleSignIn}>Log in</button>
 				</form>
+				{#if err}
+					<p class="text-red-500">Couldn't sign in, invalid credentials.</p>
+				{/if}
 
 				<p>Or sign in with:</p>
 

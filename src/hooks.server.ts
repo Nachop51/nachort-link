@@ -5,9 +5,22 @@ import Credentials from '@auth/core/providers/credentials'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import { SvelteKitAuth } from '@auth/sveltekit'
 import GitHub from '@auth/sveltekit/providers/github'
-import { fail } from '@sveltejs/kit'
 
 export const handle = SvelteKitAuth({
+	debug: false,
+	logger: {
+		error(code, ...message) {
+			if (code.name === 'CredentialsSignin') {
+				return
+			} else {
+				console.error(...message)
+			}
+		}
+	},
+	session: {
+		strategy: 'jwt',
+		maxAge: 30 * 24 * 60 * 60 // 30 days
+	},
 	adapter: MongoDBAdapter(clientPromise, {
 		databaseName: 'nachort',
 		collections: {
@@ -20,25 +33,33 @@ export const handle = SvelteKitAuth({
 	providers: [
 		GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
 		Credentials({
+			name: 'credentials',
 			credentials: {
 				handle: {
-					type: 'text'
+					type: 'text',
+					label: 'Handle',
+					placeholder: 'john.doe'
 				},
 				password: {
-					type: 'password'
+					type: 'password',
+					label: 'Password'
 				}
 			},
 			authorize: async (credentials) => {
 				const pwHash = credentials.password
 
-				const user = await getDBUser(credentials.handle as string)
+				if (typeof credentials.handle !== 'string') {
+					return null
+				}
+
+				const user = await getDBUser(credentials.handle)
 
 				if (user == null) {
-					return fail(400, { message: 'user not found' })
+					return null
 				}
 
 				if (pwHash !== user.password) {
-					return fail(400, { message: 'user not found' })
+					return null
 				}
 
 				return user

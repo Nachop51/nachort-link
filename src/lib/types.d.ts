@@ -4,3 +4,5 @@ export type DBUser = {
 	password: string
 	email?: string
 }
+
+export type UserInput = Pick<DBUser, 'email' | 'handle' | 'password'>
