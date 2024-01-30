@@ -1,38 +1,12 @@
 <script lang="ts">
 	import '../app.css'
 	import { page } from '$app/stores'
-	import { signIn, signOut } from '@auth/sveltekit/client'
-	import { onMount } from 'svelte'
-	import { invalidateAll } from '$app/navigation'
+	import { signOut } from '@auth/sveltekit/client'
 	import { RANDOM_AVATAR_URL } from '$lib/constants'
+	import AuthButton from '$lib/components/AuthButton.svelte'
 
-	let dialogElement: HTMLDialogElement
-	let handle: string
-	let password: string
-	let err = false
-
-	onMount(() => {
-		dialogElement = document.getElementById('login-menu') as HTMLDialogElement
-	})
-
-	const handleSignIn = async () => {
-		const res = await signIn('credentials', { handle, password, redirect: false })
-
-		if (res == null) {
-			err = true
-			return
-		}
-
-		const { url } = (await res.json()) as { url: string }
-
-		const params = new URLSearchParams(url.split('?')[1])
-
-		if (params.has('error')) {
-			err = true
-		} else {
-			invalidateAll()
-		}
-	}
+	$: user = $page.data.session?.user
+	$: image = user?.image ?? `${RANDOM_AVATAR_URL}${user?.name ?? 'User'}.svg`
 
 	const handleSignOut = () => {
 		signOut()
@@ -45,26 +19,30 @@
 </svelte:head>
 
 <nav class="navbar bg-base-100">
-	<div class="flex-1">
-		<a href="/" class="btn btn-ghost text-xl">Nachort Links</a>
+	<div class="flex-1 flex items-center">
+		<a href="/" class="btn btn-ghost text-xl">
+			<svg
+				class="fill-current"
+				height="30px"
+				width="30px"
+				version="1.1"
+				id="Layer_1"
+				viewBox="0 0 490.452 490.452"
+			>
+				<path
+					d="M245.226,0L43.836,126.814v236.823l201.39,126.814l201.39-126.814V126.814L245.226,0z M403.465,135.095l-158.239,99.643  L86.987,135.095l158.239-99.643L403.465,135.095z M73.836,162.267l156.39,98.477v184.81l-156.39-98.478V162.267z M260.226,445.555  v-184.81l156.39-98.478v184.81L260.226,445.555z"
+				/>
+			</svg>
+			Nachort Links
+		</a>
 	</div>
-	{#if $page.data.session?.user != null}
+	{#if user != null}
 		<div class="flex-none">
 			<a href="/dashboard" class="btn btn-ghost">Dashboard</a>
 			<div class="dropdown dropdown-end">
 				<button tabindex="0" class="btn btn-ghost btn-circle avatar">
 					<div class="w-10 rounded-full">
-						{#if $page.data.session.user?.image != null}
-							<img
-								alt={`${$page.data.session.user.name} profile`}
-								src={$page.data.session.user.image}
-							/>
-						{:else}
-							<img
-								alt={`${$page.data.session.user?.name ?? $page.data.session.user?.email ?? 'User'}'s profile`}
-								src={`${RANDOM_AVATAR_URL}${$page.data.session.user?.name ?? $page.data.session.user?.email ?? 'User'}.svg`}
-							/>
-						{/if}
+						<img alt={`${user?.name ?? user?.email ?? 'User'}'s profile`} src={image} />
 					</div>
 				</button>
 				<ul
@@ -84,42 +62,7 @@
 			</div>
 		</div>
 	{:else}
-		<button on:click={() => dialogElement.showModal()}> Login </button>
-		<dialog id="login-menu" class="modal">
-			<div class="modal-box grid place-items-center py-8 gap-4">
-				<form method="dialog">
-					<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">❌</button>
-				</form>
-
-				<h3 class="font-bold text-lg">Log In with one of the following options:</h3>
-
-				<form class="flex flex-col">
-					<input
-						type="text"
-						bind:value={handle}
-						placeholder="Type here"
-						class="input input-bordered w-full max-w-xs"
-					/>
-					<input
-						type="password"
-						bind:value={password}
-						placeholder="Type here"
-						class="input input-bordered w-full max-w-xs"
-					/>
-					<button class="btn btn-accent" on:click={handleSignIn}>Log in</button>
-				</form>
-				{#if err}
-					<p class="text-red-500">Couldn't sign in, invalid credentials.</p>
-				{/if}
-
-				<p>Or sign in with:</p>
-
-				<button class="btn btn-primary" on:click={() => signIn('github')}>
-					Sign In using GitHub
-				</button>
-				<p class="py-1 text-xs">(you can press ESC key or click on ✕ button to close)</p>
-			</div>
-		</dialog>
+		<AuthButton />
 	{/if}
 </nav>
 

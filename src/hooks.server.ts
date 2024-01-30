@@ -62,8 +62,22 @@ export const handle = SvelteKitAuth({
 					return null
 				}
 
+				user.id = user._id.toString()
+				user.name = user.handle ?? user?.name ?? user?.email ?? 'Unknown'
+
 				return user
 			}
 		})
-	]
+	],
+	callbacks: {
+		// @ts-expect-error it recognizes that the definition is wrong, but it's actually correct
+		session: async ({ session, token }) => {
+			// console.log({ session, token })
+			if (session?.user) {
+				session.user.id = token.sub
+			}
+
+			return session
+		}
+	}
 })

@@ -1,22 +1,33 @@
 import type { RequestHandler } from './$types'
-import { MongoClient } from 'mongodb'
-import { MONGO_URI } from '$env/static/private'
+import { createUser, getDBUser } from '$lib/server/mongo'
+import { json } from '@sveltejs/kit'
 
-const client = new MongoClient(MONGO_URI)
+export const POST: RequestHandler = async ({ request }) => {
+	const { handle, password } = await request.json()
 
-export const GET: RequestHandler = async () => {
-	try {
-		const database = client.db('nachort')
-		const users = database.collection('users')
-
-		const user = users.find({})
-
-		for await (const doc of user) {
-			console.log(doc)
-		}
-	} catch (error) {
-		console.error(error)
+	if (handle == null || password == null) {
+		return json({ error: 'Missing required fields' }, { status: 400 })
 	}
 
-	return new Response()
+	if (typeof handle !== 'string' || typeof password !== 'string') {
+		return json(
+			{ error: 'Invalid field types, handle and password must be strings' },
+			{ status: 400 }
+		)
+	}
+
+	await createUser({ handle, password })
+
+	const createdUser = await getDBUser(handle)
+
+	if (createdUser == null) {
+		return json({ error: 'Failed to create user' }, { status: 500 })
+	}
+
+	const user = {
+		id: createdUser._id,
+		handle: createdUser.handle
+	}
+
+	return json({ ...user })
 }
