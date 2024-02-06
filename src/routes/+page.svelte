@@ -3,12 +3,13 @@
 
 	const handleSumbit = () => {
 		console.log(link)
+		link = ''
 	}
 </script>
 
 <section class="bg-base-200 p-8 text-center rounded-lg">
 	<header class="mb-6">
-		<h1 class="text-4xl font-bold text-primary">Short your link!</h1>
+		<h1 class="text-4xl font-bold text-primary">Shorten your link!</h1>
 	</header>
 
 	<form on:submit|preventDefault={handleSumbit}>
