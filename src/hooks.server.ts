@@ -21,6 +21,7 @@ export const handle = SvelteKitAuth({
 		strategy: 'jwt',
 		maxAge: 30 * 24 * 60 * 60 // 30 days
 	},
+	// @ts-expect-error it throws a weird version error
 	adapter: MongoDBAdapter(clientPromise, {
 		databaseName: 'nachort',
 		collections: {

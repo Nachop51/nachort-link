@@ -1,4 +1,4 @@
-export type DBUser = {
+export type UserType = {
 	id: string
 	handle?: string
 	name?: string
@@ -6,14 +6,16 @@ export type DBUser = {
 	email?: string
 }
 
-export type UserInput = Pick<DBUser, 'email' | 'handle' | 'password'>
+export type UserId = Pick<UserType, 'id'>
 
-export type Link = {
+export type UserInput = Pick<UserType, 'email' | 'handle' | 'password'>
+
+export type LinkType = {
 	id: string
-	owner: string
-	original: string
-	short: string
-	public: boolean
+	ownerId?: UserId
+	link: string
+	shortLink: string
+	isPublic: boolean
 }
 
-export type LinkInput = Pick<Link, 'original' | 'short' | 'public'>
+export type LinkInput = Omit<Link, 'id'>

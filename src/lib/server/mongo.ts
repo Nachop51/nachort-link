@@ -1,13 +1,13 @@
 import { MongoClient } from 'mongodb'
 import { MONGO_URI } from '$env/static/private'
 import { DB_NAME } from '$lib/constants'
-import type { DBUser, Link, LinkInput, UserInput } from '$lib/types'
+import type { UserType, LinkType, LinkInput, UserInput } from '$lib/types'
 
 const client = new MongoClient(MONGO_URI)
+const db = client.db(DB_NAME)
 
 export async function getDBUser(handle: string) {
-	const db = client.db(DB_NAME)
-	const collection = db.collection<DBUser>('users')
+	const collection = db.collection<UserType>('users')
 
 	const user = await collection.findOne({ handle })
 
@@ -15,7 +15,6 @@ export async function getDBUser(handle: string) {
 }
 
 export async function createUser(user: UserInput) {
-	const db = client.db(DB_NAME)
 	const collection = db.collection<UserInput>('users')
 
 	const result = await collection.insertOne(user)
@@ -23,20 +22,26 @@ export async function createUser(user: UserInput) {
 	return result
 }
 
-export async function getLinks(user: DBUser) {
-	const db = client.db(DB_NAME)
-	const collection = db.collection<Link>('links')
+export async function getFullLink(shortLink: string) {
+	const collection = db.collection<LinkType>('links')
+
+	const link = await collection.findOne({ shortLink }).then((data) => data)
+
+	return link
+}
+
+export async function getLinksFromUser(user: UserType) {
+	const collection = db.collection<LinkType>('links')
 
 	const links = await collection.find({ owner: user.id }).toArray()
 
 	return links
 }
 
-export async function createLink(link: LinkInput) {
-	const db = client.db(DB_NAME)
+export async function createLink({ link, shortLink, isPublic, ownerId }: LinkInput) {
 	const collection = db.collection<LinkInput>('links')
 
-	const result = await collection.insertOne(link)
+	const result = await collection.insertOne({ link, shortLink, isPublic, ownerId })
 
 	return result
 }

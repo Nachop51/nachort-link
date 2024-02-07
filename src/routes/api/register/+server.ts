@@ -16,18 +16,22 @@ export const POST: RequestHandler = async ({ request }) => {
 		)
 	}
 
-	await createUser({ handle, password })
+	const existingUser = await getDBUser(handle)
 
-	const createdUser = await getDBUser(handle)
+	if (existingUser != null) {
+		return json({ error: 'User already exists' }, { status: 400 })
+	}
 
-	if (createdUser == null) {
+	const result = await createUser({ handle, password })
+
+	if (!result) {
 		return json({ error: 'Failed to create user' }, { status: 500 })
 	}
 
-	const user = {
-		id: createdUser._id,
-		handle: createdUser.handle
+	const createdUser = {
+		id: result.insertedId,
+		handle
 	}
 
-	return json({ ...user })
+	return json({ user: createdUser })
 }
