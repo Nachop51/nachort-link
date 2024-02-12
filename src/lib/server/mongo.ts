@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb'
 import { MONGO_URI } from '$env/static/private'
 import { DB_NAME } from '$lib/constants'
-import type { UserType, LinkType, LinkInput, UserInput } from '$lib/types'
+import type { UserType, LinkType, LinkInput, UserInput, UserId } from '$lib/types'
 
 const client = new MongoClient(MONGO_URI)
 const db = client.db(DB_NAME)
@@ -30,10 +30,10 @@ export async function getFullLink(shortLink: string) {
 	return link
 }
 
-export async function getLinksFromUser(user: UserType) {
+export async function getLinksFromUser({ id: userId }: UserId) {
 	const collection = db.collection<LinkType>('links')
 
-	const links = await collection.find({ owner: user.id }).toArray()
+	const links = await collection.find({ owner: userId }).toArray()
 
 	return links
 }
