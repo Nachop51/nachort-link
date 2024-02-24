@@ -19,3 +19,8 @@ export type LinkType = {
 }
 
 export type LinkInput = Omit<Link, 'id'>
+
+export enum THEME {
+	LIGHT = 'light',
+	DARK = 'dark'
+}

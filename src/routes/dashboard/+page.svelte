@@ -57,43 +57,47 @@
 	}
 </script>
 
-{#if newLinks.length > 0}
-	<h1 class="text-center text-5xl font-semibold my-8">Manage your links</h1>
+<main class="py-8 px-4">
+	{#if newLinks.length > 0}
+		<h1 class="text-center text-5xl font-semibold mb-6">Manage your links</h1>
 
-	<div class="grid gap-4 grid-cols-4 p-8">
-		{#each newLinks as { shortLink, link: original, _id, isPublic }}
-			<article class="card shadow-xl border border-gray-600 relative">
-				<div class="card-body py-6">
-					<h3 class="card-title">
-						<a class="link" href={shortLink}>{shortLink}</a>
-					</h3>
-					<p class="overflow-hidden text-ellipsis">{original}</p>
+		<div class="grid gap-4 grid-cols-4 p-8">
+			{#each newLinks as { shortLink, link: original, _id, isPublic }}
+				<article class="card shadow-xl border border-gray-600 relative">
+					<div class="card-body py-6">
+						<h3 class="card-title">
+							<a target="_blank" rel="noopener noreferrer" class="link" href={shortLink}
+								>{shortLink}</a
+							>
+						</h3>
+						<p class="overflow-hidden text-ellipsis">{original}</p>
 
-					<div class="card-actions justify-end">
-						<label class="flex items-center mt-2">
-							<span class="mr-2">Public</span>
-							<input
-								class="checkbox checkbox-primary"
-								type="checkbox"
-								on:change={() => handleChange({ _id, isPublic })}
-								bind:checked={isPublic}
-							/>
-						</label>
+						<div class="card-actions justify-end">
+							<label class="flex items-center mt-2">
+								<span class="mr-2">Public</span>
+								<input
+									class="checkbox checkbox-primary"
+									type="checkbox"
+									on:change={() => handleChange({ _id, isPublic })}
+									bind:checked={isPublic}
+								/>
+							</label>
+						</div>
 					</div>
-				</div>
-				<button
-					on:click={async () => {
-						await handleDelete({ _id })
-					}}
-					class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button
-				>
-			</article>
-		{/each}
-	</div>
-{:else}
-	<div class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
-		<h1 class="text-5xl font-semibold my-8">You don't have any links yet.</h1>
-		<p class="text-lg text-gray-200">Try creating one here using the button below!</p>
-		<a href="/" class="btn btn-primary mt-4">Create a link</a>
-	</div>
-{/if}
+					<button
+						on:click={async () => {
+							await handleDelete({ _id })
+						}}
+						class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button
+					>
+				</article>
+			{/each}
+		</div>
+	{:else}
+		<div class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
+			<h1 class="text-5xl font-semibold my-8">You don't have any links yet.</h1>
+			<p class="text-lg text-gray-200">Try creating one here using the button below!</p>
+			<a href="/" class="btn btn-primary mt-4">Create a link</a>
+		</div>
+	{/if}
+</main>

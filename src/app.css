@@ -14,3 +14,7 @@ html {
 	font-family: 'Outfit', sans-serif;
 	font-optical-sizing: auto;
 }
+
+.min-h-size {
+	min-height: calc(100vh - 6rem);
+}

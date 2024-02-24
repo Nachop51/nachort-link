@@ -45,10 +45,10 @@
 	}
 </script>
 
-<main class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
-	<section class="bg-base-200 p-8 text-center rounded-lg">
+<main class="min-h-size -mt-12 flex items-center flex-col justify-center">
+	<section class="bg-base-100 p-8 text-center rounded-lg">
 		<header class="mb-4">
-			<h1 class="text-4xl font-bold text-primary">Shorten your link!</h1>
+			<h1 class="text-4xl font-bold text-accent">Shorten your link!</h1>
 		</header>
 
 		<form on:submit|preventDefault={handleSubmit}>
@@ -62,7 +62,7 @@
 				class:input-error={error !== null}
 				placeholder="https://example.com"
 			/>
-			<button class="btn bg-base-300 mx-auto" type="submit">Shorten</button>
+			<button class="btn btn-accent mx-auto" type="submit">Shorten</button>
 		</form>
 		{#if loading}
 			<div class="">
@@ -72,8 +72,11 @@
 		{#if !loading && error === null && shortenedLink !== null}
 			<div class="mt-4" data-sveltekit-preload-data="off">
 				<p class="text-success">Your link has been shortened!</p>
-				<a class="link link-primary text-lg" href={shortenedLink}
-					>Go to &rarr; {`/${shortenedLink}`}</a
+				<a
+					class="link link-primary text-lg"
+					href={shortenedLink}
+					target="_blank"
+					rel="noopener noreferrer">Go to &rarr; {`/${shortenedLink}`}</a
 				>
 				<button
 					class="mt-4 btn btn-md text-md btn-accent text-base-100 mx-auto flex items-center"
