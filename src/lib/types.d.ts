@@ -6,13 +6,13 @@ export type UserType = {
 	email?: string
 }
 
-export type UserId = Pick<UserType, 'id'>
+export type UserIdType = UserType['id']
 
 export type UserInput = Pick<UserType, 'email' | 'handle' | 'password'>
 
 export type LinkType = {
-	id: string
-	ownerId?: UserId
+	_id: string
+	ownerId: UserIdType | null
 	link: string
 	shortLink: string
 	isPublic: boolean

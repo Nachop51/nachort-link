@@ -4,11 +4,13 @@
 	import { signOut } from '@auth/sveltekit/client'
 	import { RANDOM_AVATAR_URL } from '$lib/constants'
 	import AuthButton from '$lib/components/AuthButton.svelte'
+	import { goto } from '$app/navigation'
 
 	$: user = $page.data.session?.user
 	$: image = user?.image ?? `${RANDOM_AVATAR_URL}${user?.name ?? 'User'}.svg`
 
 	const handleSignOut = () => {
+		goto('/')
 		signOut()
 	}
 </script>
@@ -18,7 +20,7 @@
 	<meta name="description" content="Short your links with Nachort Links in just one go." />
 </svelte:head>
 
-<nav class="navbar bg-base-100">
+<nav class="navbar bg-base-200">
 	<div class="flex-1 flex items-center">
 		<a href="/" class="btn btn-ghost text-xl">
 			<svg
@@ -38,10 +40,10 @@
 	</div>
 	{#if user != null}
 		<div class="flex-none">
-			<a href="/dashboard" class="btn btn-ghost">Dashboard</a>
+			<a href="/dashboard" class="btn btn-ghost mr-2 text-lg"> Dashboard </a>
 			<div class="dropdown dropdown-end">
 				<button tabindex="0" class="btn btn-ghost btn-circle avatar">
-					<div class="w-10 rounded-full">
+					<div class="w-10 border border-gray-600 rounded-full">
 						<img alt={`${user?.name ?? user?.email ?? 'User'}'s profile`} src={image} />
 					</div>
 				</button>
@@ -66,6 +68,4 @@
 	{/if}
 </nav>
 
-<main class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
-	<slot />
-</main>
+<slot />
