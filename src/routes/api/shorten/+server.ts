@@ -7,7 +7,7 @@ import {
 	updatePublicLink
 } from '$lib/server/mongo'
 import { json } from '@sveltejs/kit'
-import { randomShortLink } from '$lib/links'
+import { isValidHttpUrl, randomShortLink } from '$lib/links'
 import { getUser } from '$lib/server/user'
 
 export const GET: RequestHandler = async ({ url }) => {
@@ -28,6 +28,10 @@ export const GET: RequestHandler = async ({ url }) => {
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const { link } = await request.json()
+
+	if (isValidHttpUrl(link) === false) {
+		return json({ error: 'Invalid link' }, { status: 400 })
+	}
 
 	const user = await getUser({ locals })
 

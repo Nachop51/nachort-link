@@ -25,11 +25,9 @@ export const load = (async ({ params, locals, fetch }) => {
 		throw redirect(302, linkData.link)
 	}
 
-	if (session == null) {
+	if (session == null || linkData.ownerId !== session?.user?.id) {
 		throw error(404, 'Link not found')
-	} else if (linkData.ownerId !== session?.user?.id) {
-		throw error(404, 'Link not found')
-	} else {
-		throw redirect(302, linkData.link)
 	}
+
+	throw redirect(302, linkData.link)
 }) satisfies PageServerLoad

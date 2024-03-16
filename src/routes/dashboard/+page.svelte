@@ -61,7 +61,7 @@
 	{#if newLinks.length > 0}
 		<h1 class="text-center text-5xl font-semibold mb-6">Manage your links</h1>
 
-		<div class="grid gap-4 grid-cols-4 p-8">
+		<div class="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
 			{#each newLinks as { shortLink, link: original, _id, isPublic }}
 				<article class="card shadow-xl border border-gray-600 relative">
 					<div class="card-body py-6">

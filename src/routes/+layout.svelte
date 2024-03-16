@@ -7,8 +7,8 @@
 </script>
 
 <svelte:head>
-	<title>Nachort Links</title>
-	<meta name="description" content="Short your links with Nachort Links in just one go." />
+	<title>Linkly</title>
+	<meta name="description" content="Short your links with Linkly in just one go." />
 </svelte:head>
 
 <NavBar {user} />
