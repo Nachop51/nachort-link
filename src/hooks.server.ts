@@ -1,10 +1,11 @@
-import { GITHUB_ID, GITHUB_SECRET } from '$env/static/private'
+import { GITHUB_ID, GITHUB_SECRET, GOOGLE_ID, GOOGLE_SECRET } from '$env/static/private'
 import { getDBUser } from '$lib/server/mongo'
 import clientPromise from '$lib/server/mongoPromise'
 import Credentials from '@auth/core/providers/credentials'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import { SvelteKitAuth } from '@auth/sveltekit'
 import GitHub from '@auth/sveltekit/providers/github'
+import Google from '@auth/sveltekit/providers/google'
 
 export const handle = SvelteKitAuth({
 	debug: false,
@@ -33,6 +34,7 @@ export const handle = SvelteKitAuth({
 	}),
 	providers: [
 		GitHub({ clientId: GITHUB_ID, clientSecret: GITHUB_SECRET }),
+		Google({ clientId: GOOGLE_ID, clientSecret: GOOGLE_SECRET }),
 		Credentials({
 			name: 'credentials',
 			credentials: {

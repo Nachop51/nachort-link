@@ -39,7 +39,7 @@
 	}
 </script>
 
-<nav class="navbar top-0">
+<nav class="navbar">
 	<a class="flex items-center" href="/" title="Go to home page">
 		<svg
 			class="fill-current"

@@ -32,7 +32,7 @@
 	}
 </script>
 
-<main class="min-h-size -mt-12 flex items-center flex-col justify-center px-8">
+<main class="min-h-size sm:-mt-6 md:-mt-12 flex items-center flex-col justify-center px-8">
 	<section class="bg-base-100/50 px-8 py-6 text-center rounded-xl border border-neutral/70">
 		<header class="mb-4">
 			<h1 class="text-4xl font-bold text-accent">Shorten your link!</h1>
@@ -41,7 +41,7 @@
 		<form class="max-w-[300px] mx-auto" on:submit|preventDefault={handleSubmit}>
 			<label class="form-control w-full">
 				<div class="label">
-					<span class="label-text font-semibold">Insert your link</span>
+					<span class="label-text font-semibold">Insert a link</span>
 				</div>
 				<input
 					class="input input-bordered mb-2"
@@ -99,7 +99,9 @@
 	</section>
 
 	<section class="mt-8 text-center">
-		<p class="text-lg">Or try to shorten one of the links below:</p>
+		<header>
+			<h2 class="text-lg">Or try to shorten one of the links below:</h2>
+		</header>
 
 		<div class="mt-4 flex gap-4 flex-wrap justify-center">
 			<button

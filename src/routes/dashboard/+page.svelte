@@ -61,14 +61,14 @@
 	{#if newLinks.length > 0}
 		<h1 class="text-center text-5xl font-semibold mb-6">Manage your links</h1>
 
-		<div class="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
+		<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
 			{#each newLinks as { shortLink, link: original, _id, isPublic }}
 				<article class="card shadow-xl border border-gray-600 relative">
 					<div class="card-body py-6">
 						<h3 class="card-title">
-							<a target="_blank" rel="noopener noreferrer" class="link" href={shortLink}
-								>{shortLink}</a
-							>
+							<a target="_blank" rel="noopener noreferrer" class="link" href={shortLink}>
+								{shortLink}
+							</a>
 						</h3>
 						<p class="overflow-hidden text-ellipsis">{original}</p>
 
@@ -94,7 +94,9 @@
 			{/each}
 		</div>
 	{:else}
-		<div class="flex items-center flex-col justify-center min-h-[calc(100vh-132px)]">
+		<div
+			class="-mt-8 sm:-mt-12 flex items-center flex-col justify-center min-h-[calc(100vh-132px)]"
+		>
 			<h1 class="text-5xl font-semibold my-8">You don't have any links yet.</h1>
 			<p class="text-lg text-gray-200">Try creating one here using the button below!</p>
 			<a href="/" class="btn btn-primary mt-4">Create a link</a>

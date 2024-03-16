@@ -2,6 +2,10 @@
 	import { signIn } from '@auth/sveltekit/client'
 	import { invalidateAll } from '$app/navigation'
 	import { onMount } from 'svelte'
+	import UserIcon from './icons/user.svelte'
+	import KeyIcon from './icons/key.svelte'
+	import GithubIcon from './icons/github.svelte'
+	import GoogleIcon from './icons/google.svelte'
 
 	let err = false
 	let handle: string
@@ -33,50 +37,54 @@
 </script>
 
 <button class="btn btn-ghost text-lg" on:click={() => dialogElement.showModal()}>
-	<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"
-		><circle cx="12" cy="6" r="4" fill="currentColor" /><path
-			fill="currentColor"
-			d="M20 17.5c0 2.485 0 4.5-8 4.5s-8-2.015-8-4.5S7.582 13 12 13s8 2.015 8 4.5"
-		/></svg
-	>
-	Login
+	<UserIcon />
+	Log In
 </button>
+
 <dialog id="login-menu" class="modal">
-	<div class="modal-box grid place-items-center py-8 gap-4">
+	<div class="modal-box flex flex-col gap-4">
 		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+			<button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
 		</form>
 
-		<h3 class="font-bold text-xl">Log In with one of the following options:</h3>
+		<div class="max-w-sm w-full mx-auto">
+			<h2 class="font-bold text-3xl text-accent mb-2">Log In</h2>
 
-		<form class="flex flex-col max-w-xs items-stretch">
-			<input
-				type="text"
-				bind:value={handle}
-				placeholder="cool_shortener_user"
-				class="input input-bordered"
-			/>
-			<input
-				type="password"
-				bind:value={password}
-				placeholder="**********"
-				class="input input-bordered"
-			/>
-			<button class="btn btn-accent" on:click={handleSignIn}>Log in</button>
-		</form>
-		{#if err}
-			<p class="text-red-500">Couldn't sign in, invalid credentials.</p>
-		{/if}
+			<h3 class="text-xl mb-3">
+				Don't have an account? <button class="link link-accent">Sign Up</button>
+			</h3>
 
-		<p>Or sign in with:</p>
+			<form class="flex flex-col items-stretch gap-2">
+				<label class="input input-bordered flex items-center gap-2">
+					<UserIcon />
+					<input type="text" bind:value={handle} class="grow" placeholder="cool_shortener_user" />
+				</label>
+				<label class="input input-bordered flex items-center gap-2">
+					<KeyIcon />
+					<input type="password" bind:value={password} placeholder="**********" class="grow" />
+				</label>
 
-		<button class="btn btn-primary" on:click={() => signIn('github')}>
-			Sign In using GitHub
-		</button>
+				<button class="btn btn-accent" on:click={handleSignIn}>Log In</button>
+			</form>
+			{#if err}
+				<p class="text-error">Couldn't sign in, invalid credentials.</p>
+			{/if}
 
-		<p class="py-1 text-sm">
-			(you can press <kbd class="kbd kbd-xs">esc</kbd> key or click on
-			<kbd class="kbd kbd-xs">✕</kbd> button to close)
-		</p>
+			<div class="divider my-8 text-base">Or continue with</div>
+
+			<div class="text [&>button]:mb-2">
+				<button class="btn btn-primary text-base w-full" on:click={() => signIn('google')}>
+					<GoogleIcon /> Google
+				</button>
+				<button class="btn btn-primary text-base w-full" on:click={() => signIn('github')}>
+					<GithubIcon /> GitHub
+				</button>
+			</div>
+
+			<p class="py-1 text-sm text-center mt-4">
+				(you can press <kbd class="kbd kbd-xs">esc</kbd> key or click on
+				<kbd class="kbd kbd-xs">✕</kbd> button to close)
+			</p>
+		</div>
 	</div>
 </dialog>

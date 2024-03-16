@@ -49,9 +49,9 @@ export default {
           neutral: '#3d4451',
           'neutral-content': '#cbd5e1',
           'base-100': '#0f0526',
-          'base-200': '#f9fafb',
-          'base-300': '#fefdff',
-          'base-content': '#fff',
+          'base-200': '#140f1e',
+          'base-300': '#1e1933',
+          'base-content': '#cbd5e1',
           '--shadow': '#ffffff15',
           '.bg-gradient': {
             position: 'fixed',

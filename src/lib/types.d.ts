@@ -8,7 +8,7 @@ export type UserType = {
 
 export type UserIdType = UserType['id']
 
-export type UserInput = Pick<UserType, 'email' | 'handle' | 'password'>
+export type UserInput = Omit<UserType, 'id' | 'name'>
 
 export type LinkType = {
 	_id: string
@@ -16,9 +16,10 @@ export type LinkType = {
 	link: string
 	shortLink: string
 	isPublic: boolean
+	totalVisits: number
 }
 
-export type LinkInput = Omit<Link, 'id'>
+export type LinkInput = Omit<Link, 'id' | 'totalVisits'>
 
 export enum THEME {
 	LIGHT = 'light',
