@@ -86,3 +86,13 @@ export async function updatePublicLink({
 
 	return result.acknowledged
 }
+
+export async function registerVisit({ linkId }: { linkId: string }) {
+	const collection = db.collection(LINKS_COLLECTION)
+
+	const result = await collection.updateOne({ _id: new ObjectId(linkId) }, { $inc: { visits: 1 } })
+
+	console.log({ result })
+
+	return result.acknowledged
+}

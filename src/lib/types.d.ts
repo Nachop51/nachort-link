@@ -16,10 +16,10 @@ export type LinkType = {
 	link: string
 	shortLink: string
 	isPublic: boolean
-	totalVisits: number
+	visits?: number
 }
 
-export type LinkInput = Omit<Link, 'id' | 'totalVisits'>
+export type LinkInput = Omit<Link, 'id' | 'visits'>
 
 export enum THEME {
 	LIGHT = 'light',

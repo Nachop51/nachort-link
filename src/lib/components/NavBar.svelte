@@ -82,8 +82,8 @@
 		{#if user != null}
 			<a href="/dashboard" class="btn btn-sm btn-ghost text-lg"> Dashboard </a>
 			<div class="dropdown dropdown-end max-h-8">
-				<button tabindex="0" class="btn btn-sm btn-ghost btn-circle avatar">
-					<div class="w-8 h-8 border border-gray-600 rounded-full">
+				<button tabindex="0" class="btn btn-sm btn-ghost btn-circle avatar w-8 h-8">
+					<div class="w-full h-full border border-gray-600 rounded-full">
 						<img alt={`${user?.name ?? user?.email ?? 'User'}'s profile`} src={image} />
 					</div>
 				</button>

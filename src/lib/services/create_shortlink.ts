@@ -14,9 +14,9 @@ export const createShortlink = async (link: string) => {
 			const data = (await res.json()) as LinkType
 
 			return data.shortLink
-		} else {
-			throw new Error('Failed to create link, please try again later.')
 		}
+
+		throw new Error('Failed to create link, please try again later.')
 	} catch (e) {
 		if (e instanceof Error) {
 			throw Error(e.message)

@@ -64,7 +64,7 @@
 			{:else if shortenedLink !== null}
 				Your link has been shortened!
 			{:else}
-				Insert a link and click on "Shorten"
+				Insert a link and then click on "Shorten"
 			{/if}
 		</p>
 

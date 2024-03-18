@@ -6,6 +6,7 @@
 	import KeyIcon from './icons/key.svelte'
 	import GithubIcon from './icons/github.svelte'
 	import GoogleIcon from './icons/google.svelte'
+	import CrossIcon from './icons/cross.svelte'
 
 	let err = false
 	let handle: string
@@ -44,7 +45,9 @@
 <dialog id="login-menu" class="modal">
 	<div class="modal-box flex flex-col gap-4">
 		<form method="dialog">
-			<button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">✕</button>
+			<button class="btn btn-sm btn-circle btn-ghost absolute right-4 top-4">
+				<CrossIcon className="size-5" />
+			</button>
 		</form>
 
 		<div class="max-w-sm w-full mx-auto">
@@ -83,7 +86,7 @@
 
 			<p class="py-1 text-sm text-center mt-4">
 				(you can press <kbd class="kbd kbd-xs">esc</kbd> key or click on
-				<kbd class="kbd kbd-xs">✕</kbd> button to close)
+				<kbd class="kbd kbd-xs">X</kbd> button to close)
 			</p>
 		</div>
 	</div>

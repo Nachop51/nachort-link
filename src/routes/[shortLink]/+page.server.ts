@@ -1,6 +1,7 @@
 import { error, redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
 import type { LinkType } from '$lib/types'
+import { registerVisit } from '$lib/server/mongo'
 
 export const load = (async ({ params, locals, fetch }) => {
 	const { shortLink } = params
@@ -21,13 +22,16 @@ export const load = (async ({ params, locals, fetch }) => {
 		throw error(404, 'Link not found')
 	}
 
-	if (linkData.isPublic === true) {
-		throw redirect(302, linkData.link)
-	}
+	// If there is no session, or the link owner is not the same as the session user, and the link is not public
+	// then throw a 404
+	// If the link is public, or the above conditions are not met, then redirect to the link
 
 	if (session == null || linkData.ownerId !== session?.user?.id) {
-		throw error(404, 'Link not found')
+		if (linkData.isPublic === false) {
+			throw error(404, 'Link not found')
+		}
 	}
 
+	await registerVisit({ linkId: linkData._id })
 	throw redirect(302, linkData.link)
 }) satisfies PageServerLoad
