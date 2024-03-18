@@ -22,7 +22,7 @@
 
 		try {
 			shortenedLink = await createShortlink(link)
-			shortenedLink = $page.url.href + shortenedLink
+			shortenedLink = $page.url.origin + shortenedLink
 		} catch (e) {
 			error = 'An error occurred while shortening the link. Please try again later.'
 		}
@@ -92,7 +92,7 @@
 					on:click={() => navigator.clipboard.writeText(`${shortenedLink}`)}
 				>
 					Copy link
-					<CopyIcon />
+					<CopyIcon className="" />
 				</button>
 			</div>
 		{/if}
