@@ -1,16 +1,20 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { changeVisibility } from '$lib/services/change_visibility'
+	import { changeVisibility } from '$lib/services/changeVisibility'
 	import { page } from '$app/stores'
 	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 	import CrossIcon from '$lib/components/icons/cross.svelte'
+	import { deleteLink } from '$lib/services/deleteLink'
+	import { LINK_FILTERS } from '$lib/constants'
+	import { createLinkStore, searchHandler } from '$lib/stores/links'
+	import { onDestroy } from 'svelte'
 
 	export let data: PageData
 
 	const { links } = data
 
-	$: newLinks = links
+	const linkStore = createLinkStore(links)
 
 	async function handleChange({
 		_id,
@@ -29,45 +33,50 @@
 		}
 
 		if (await changeVisibility({ linkId: _id, isPublic: !isPublic })) {
-			newLinks = newLinks.map((link) => {
-				if (link._id.toString() === _id) {
-					link.isPublic = !isPublic
-					return link
-				}
-
-				return link
-			})
+			linkStore.updateVisibility({ linkId: _id, isPublic: !isPublic })
 		}
 	}
 
 	async function handleDelete({ _id }: { _id: string }) {
 		if (!confirm('Are you sure you want to delete this link?')) return
 
-		try {
-			const res = await fetch(`/api/shorten`, {
-				method: 'DELETE',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ linkId: _id })
-			})
-			if (res.ok) {
-				newLinks = newLinks.filter((link) => link._id !== _id)
-			} else {
-				throw new Error('Failed to delete')
-			}
-		} catch (e) {
-			console.error(e)
+		if (await deleteLink({ linkId: _id })) {
+			linkStore.remove({ linkId: _id })
 		}
 	}
+
+	const unsubscribe = linkStore.subscribe((value) => searchHandler(value))
+
+	onDestroy(() => {
+		unsubscribe()
+	})
 </script>
 
 <main class="py-8 px-4">
-	{#if newLinks.length > 0}
-		<h1 class="text-center text-5xl font-semibold mb-6">Manage your links</h1>
+	{#if $linkStore.links.length > 0}
+		<h1 class="text-center text-5xl font-semibold mb-10">Manage your links</h1>
 
-		<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
-			{#each newLinks as { shortLink, link: original, _id, isPublic, visits }}
+		<section class="flex justify-center">
+			<div class="join">
+				<input
+					bind:value={$linkStore.search}
+					type="text"
+					placeholder="Search for a link..."
+					class="input input-bordered input-primary w-full max-w-xs join-item"
+				/>
+				<select
+					class="select select-primary w-min max-w-xs join-item"
+					bind:value={$linkStore.filterBy}
+				>
+					{#each Object.values(LINK_FILTERS) as filter}
+						<option value={filter}>{filter}</option>
+					{/each}
+				</select>
+			</div>
+		</section>
+
+		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
+			{#each $linkStore.filtered as { shortLink, link: original, _id, isPublic, visits }}
 				<article class="card shadow-xl border border-gray-600 relative">
 					<div class="card-body py-6">
 						<h3 class="card-title text-primary">
@@ -118,15 +127,25 @@
 						</button>
 					</div>
 				</article>
+			{:else}
+				<div class="text-center" style="grid-column: 1/-1;">
+					<h1 class="text-4xl font-semibold my-8 text-neutral-content">
+						Oops there is no links with those filters.
+					</h1>
+					<p class="text-lg text-neutral-content">Try using another combinations!</p>
+					<button class="btn btn-primary mt-4" on:click={linkStore.clearFilters}>
+						Reset filters
+					</button>
+				</div>
 			{/each}
-		</div>
+		</section>
 	{:else}
-		<div
+		<section
 			class="-mt-8 sm:-mt-12 flex items-center flex-col justify-center min-h-[calc(100vh-132px)]"
 		>
 			<h1 class="text-5xl font-semibold my-8">You don't have any links yet.</h1>
 			<p class="text-lg text-neutral-content">Try creating one here using the button below!</p>
 			<a href="/" class="btn btn-primary mt-4">Create a link</a>
-		</div>
+		</section>
 	{/if}
 </main>

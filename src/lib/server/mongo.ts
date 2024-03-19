@@ -92,7 +92,5 @@ export async function registerVisit({ linkId }: { linkId: string }) {
 
 	const result = await collection.updateOne({ _id: new ObjectId(linkId) }, { $inc: { visits: 1 } })
 
-	console.log({ result })
-
 	return result.acknowledged
 }

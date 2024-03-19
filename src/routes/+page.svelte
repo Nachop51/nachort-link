@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isValidHttpUrl } from '$lib/links'
 	import { page } from '$app/stores'
-	import { createShortlink } from '$lib/services/create_shortlink'
+	import { createShortlink } from '$lib/services/createShortlink'
 	import LinkIcon from '$lib/components/icons/link.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 
@@ -22,7 +22,7 @@
 
 		try {
 			shortenedLink = await createShortlink(link)
-			shortenedLink = $page.url.origin + shortenedLink
+			shortenedLink = `${$page.url.origin}/${shortenedLink}`
 		} catch (e) {
 			error = 'An error occurred while shortening the link. Please try again later.'
 		}
