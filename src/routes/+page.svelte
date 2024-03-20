@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isValidHttpUrl } from '$lib/links'
 	import { page } from '$app/stores'
-	import { createShortlink } from '$lib/services/createShortlink'
+	import { createShortlink } from '$lib/services/api'
 	import LinkIcon from '$lib/components/icons/link.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 

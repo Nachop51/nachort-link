@@ -1,11 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { changeVisibility } from '$lib/services/changeVisibility'
 	import { page } from '$app/stores'
 	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 	import CrossIcon from '$lib/components/icons/cross.svelte'
-	import { deleteLink } from '$lib/services/deleteLink'
+	import { deleteLink, changeVisibility } from '$lib/services/api'
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
 	import { onDestroy } from 'svelte'
