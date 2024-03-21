@@ -23,18 +23,14 @@ export async function createUser(user: UserInput) {
 	return result
 }
 
-export async function getFullLink({ shortLink }: { shortLink: string }) {
+export async function getFullLink({ shortLink }: { shortLink?: string }) {
+	if (shortLink == null) {
+		return null
+	}
+
 	const collection = db.collection<LinkType>(LINKS_COLLECTION)
 
 	const link = await collection.findOne({ shortLink })
-
-	return link
-}
-
-export async function getFullLinkById({ linkId }: { linkId: UserIdType }) {
-	const collection = db.collection(LINKS_COLLECTION)
-
-	const link = await collection.findOne({ _id: new ObjectId(linkId) })
 
 	return link
 }

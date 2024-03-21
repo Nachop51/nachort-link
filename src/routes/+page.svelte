@@ -1,16 +1,27 @@
 <script lang="ts">
 	import { isValidHttpUrl } from '$lib/links'
 	import { page } from '$app/stores'
-	import { createShortlink } from '$lib/services/api'
 	import LinkIcon from '$lib/components/icons/link.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
+	import { onMount } from 'svelte'
+	import { Api } from '$lib/services/api'
 
 	let link = ''
+	let isPublic = true
+
 	let shortenedLink: string | null = null
 	let loading = false
 	let error: string | null = null
 
+	$: user = $page.data.session?.user
+
+	onMount(async () => {
+		fetch('./').catch(() => {})
+	})
+
 	const handleSubmit = async () => {
+		if (loading) return
+
 		loading = true
 		error = null
 
@@ -21,7 +32,10 @@
 		}
 
 		try {
-			shortenedLink = await createShortlink(link)
+			if (user == null) {
+				isPublic = true
+			}
+			shortenedLink = await new Api().createShortlink({ link, isPublic })
 			shortenedLink = `${$page.url.origin}/${shortenedLink}`
 		} catch (e) {
 			error = 'An error occurred while shortening the link. Please try again later.'
@@ -44,14 +58,20 @@
 					<span class="label-text font-semibold">Insert a link</span>
 				</div>
 				<input
-					class="input input-bordered mb-2"
+					class="input input-bordered"
 					type="url"
 					bind:value={link}
 					class:input-error={error !== null}
 					placeholder="https://example.com"
 				/>
 			</label>
-			<button class="btn btn-accent text-accent-content w-full" type="submit">Shorten</button>
+			{#if user != null}
+				<label class="label cursor-pointer pb-0">
+					<span class="label-text">Public link?</span>
+					<input type="checkbox" class="checkbox checkbox-accent" bind:checked={isPublic} />
+				</label>
+			{/if}
+			<button class="btn btn-accent text-accent-content w-full mt-2" type="submit">Shorten</button>
 		</form>
 
 		<p
@@ -129,7 +149,7 @@
 	</section>
 </main>
 
-<style>
+<style lang="postcss">
 	.succeed {
 		@apply text-success;
 	}

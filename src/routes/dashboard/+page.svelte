@@ -4,7 +4,7 @@
 	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 	import CrossIcon from '$lib/components/icons/cross.svelte'
-	import { deleteLink, changeVisibility } from '$lib/services/api'
+	import { Api } from '$lib/services/api'
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
 	import { onDestroy } from 'svelte'
@@ -16,11 +16,11 @@
 	const linkStore = createLinkStore(links)
 
 	async function handleChange({
-		_id,
+		shortLink,
 		isPublic,
 		e
 	}: {
-		_id: string
+		shortLink: string
 		isPublic: boolean
 		e: Event & { currentTarget: HTMLInputElement }
 	}) {
@@ -31,16 +31,16 @@
 			return
 		}
 
-		if (await changeVisibility({ linkId: _id, isPublic: !isPublic })) {
-			linkStore.updateVisibility({ linkId: _id, isPublic: !isPublic })
+		if (await new Api().changeVisibility({ shortLink, isPublic: !isPublic })) {
+			linkStore.updateVisibility({ shortLink: shortLink, isPublic: !isPublic })
 		}
 	}
 
-	async function handleDelete({ _id }: { _id: string }) {
+	async function handleDelete({ shortLink }: { shortLink: string }) {
 		if (!confirm('Are you sure you want to delete this link?')) return
 
-		if (await deleteLink({ linkId: _id })) {
-			linkStore.remove({ linkId: _id })
+		if (await new Api().deleteShortLink({ shortLink })) {
+			linkStore.remove({ shortLink })
 		}
 	}
 
@@ -75,7 +75,7 @@
 		</section>
 
 		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
-			{#each $linkStore.filtered as { shortLink, link: original, _id, isPublic, visits }}
+			{#each $linkStore.filtered as { shortLink, link: original, isPublic, visits }}
 				<article class="card shadow-xl border border-gray-600 relative">
 					<div class="card-body py-6">
 						<h3 class="card-title text-primary">
@@ -99,7 +99,7 @@
 									<input
 										class="checkbox checkbox-primary"
 										type="checkbox"
-										on:change={(e) => handleChange({ e, _id, isPublic })}
+										on:change={(e) => handleChange({ e, shortLink, isPublic })}
 										bind:checked={isPublic}
 									/>
 								</label>
@@ -118,7 +118,7 @@
 						</button>
 						<button
 							on:click={async () => {
-								await handleDelete({ _id })
+								await handleDelete({ shortLink })
 							}}
 							class="btn btn-sm btn-circle btn-ghost"
 						>

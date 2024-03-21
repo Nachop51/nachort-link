@@ -2,33 +2,33 @@ import { LINK_FILTERS } from '$lib/constants'
 import type { LinkFilterValues, LinkType } from '$lib/types'
 import { writable } from 'svelte/store'
 
-export interface LinkStoreModel<T extends Record<PropertyKey, any>> {
-	links: T[]
-	filtered: T[]
+export interface LinkStoreModel {
+	links: Array<LinkType>
+	filtered: Array<LinkType>
 	filterBy: LinkFilterValues
 	search: string
 }
 
-export const createLinkStore = <T extends Record<PropertyKey, any>>(initialValue: T[]) => {
-	const linkStore = writable<LinkStoreModel<T>>({
+export const createLinkStore = (initialValue: Array<LinkType>) => {
+	const linkStore = writable<LinkStoreModel>({
 		links: initialValue,
 		filtered: initialValue,
 		filterBy: LINK_FILTERS.ALL,
 		search: ''
 	})
 
-	function remove({ linkId }: { linkId: string }) {
+	function remove({ shortLink }: { shortLink: string }) {
 		linkStore.update((state) => ({
 			...state,
-			links: state.links.filter((link) => link._id !== linkId)
+			links: state.links.filter((link) => link.shortLink !== shortLink)
 		}))
 	}
 
-	function updateVisibility({ linkId, isPublic }: { linkId: string; isPublic: boolean }) {
+	function updateVisibility({ shortLink, isPublic }: { shortLink: string; isPublic: boolean }) {
 		linkStore.update((state) => ({
 			...state,
 			links: state.links.map((link) => {
-				if (link._id === linkId) {
+				if (link.shortLink === shortLink) {
 					return {
 						...link,
 						isPublic
@@ -56,7 +56,7 @@ export const createLinkStore = <T extends Record<PropertyKey, any>>(initialValue
 	}
 }
 
-export const searchHandler = (store: LinkStoreModel<LinkType>) => {
+export const searchHandler = (store: LinkStoreModel) => {
 	const searchTerm = store.search.toLowerCase()
 
 	store.filtered = store.links.filter((link) => {
