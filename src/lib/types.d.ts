@@ -1,3 +1,4 @@
+import type { ObjectId } from 'mongodb'
 import type { LINK_FILTERS } from './constants'
 
 export type UserType = {
@@ -13,7 +14,7 @@ export type UserIdType = UserType['id']
 export type UserInput = Omit<UserType, 'id' | 'name'>
 
 export type LinkType = {
-	_id: string
+	_id?: ObjectId | string
 	ownerId: UserIdType | null
 	link: string
 	shortLink: string
@@ -21,7 +22,7 @@ export type LinkType = {
 	visits?: number
 }
 
-export type LinkInput = Omit<Link, 'id' | 'visits'>
+export type LinkInput = Omit<LinkType, '_id' | 'visits'>
 
 export enum THEME {
 	LIGHT = 'light',

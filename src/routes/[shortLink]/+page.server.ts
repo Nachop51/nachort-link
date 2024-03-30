@@ -1,17 +1,23 @@
 import { error, redirect } from '@sveltejs/kit'
 import type { PageServerLoad } from './$types'
-import { registerVisit } from '$lib/server/mongo'
-import { Api } from '$lib/services/api'
+import { Link } from '$lib/server/links'
+import { getUser } from '$lib/server/user'
 
-export const load = (async ({ params, fetch }) => {
+export const load = (async ({ params, locals }) => {
 	const { shortLink } = params
 
-	const linkData = await new Api(fetch).getShortLink(shortLink)
+	const linkData = await Link.getFull({ shortLink })
 
 	if (linkData == null) {
 		throw error(404, 'Link not found')
 	}
 
-	await registerVisit({ linkId: linkData._id })
+	const user = await getUser({ locals })
+
+	if (linkData.isPublic === false && user?.id !== linkData.ownerId) {
+		throw error(401, 'Unauthorized')
+	}
+
+	await Link.registerVisit({ linkId: linkData._id })
 	throw redirect(302, linkData.link)
 }) satisfies PageServerLoad

@@ -1,6 +1,6 @@
 import { GITHUB_ID, GITHUB_SECRET, GOOGLE_ID, GOOGLE_SECRET } from '$env/static/private'
-import { getDBUser } from '$lib/server/mongo'
 import clientPromise from '$lib/server/mongoPromise'
+import { User } from '$lib/server/user'
 import Credentials from '@auth/core/providers/credentials'
 import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import { SvelteKitAuth } from '@auth/sveltekit'
@@ -55,7 +55,7 @@ export const handle = SvelteKitAuth({
 					return null
 				}
 
-				const user = await getDBUser(credentials.handle)
+				const user = await User.get(credentials.handle)
 
 				if (user == null) {
 					return null

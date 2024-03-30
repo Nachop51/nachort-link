@@ -1,33 +1,28 @@
 <script lang="ts">
 	import { isValidHttpUrl } from '$lib/links'
 	import { page } from '$app/stores'
+	import { createShortlink } from '$lib/services/api.js'
 	import LinkIcon from '$lib/components/icons/link.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
-	import { onMount } from 'svelte'
-	import { Api } from '$lib/services/api'
 
 	let link = ''
 	let isPublic = true
 
 	let shortenedLink: string | null = null
-	let loading = false
-	let error: string | null = null
+	let isLoading = false
+	let formError: string | null = null
 
 	$: user = $page.data.session?.user
 
-	onMount(async () => {
-		fetch('./').catch(() => {})
-	})
-
 	const handleSubmit = async () => {
-		if (loading) return
+		if (isLoading) return
 
-		loading = true
-		error = null
+		isLoading = true
+		formError = null
 
 		if (!isValidHttpUrl(link)) {
-			error = 'Invalid URL'
-			loading = false
+			formError = 'Invalid URL'
+			isLoading = false
 			return
 		}
 
@@ -35,13 +30,13 @@
 			if (user == null) {
 				isPublic = true
 			}
-			shortenedLink = await new Api().createShortlink({ link, isPublic })
+			shortenedLink = await createShortlink({ link, isPublic })
 			shortenedLink = `${$page.url.origin}/${shortenedLink}`
 		} catch (e) {
-			error = 'An error occurred while shortening the link. Please try again later.'
+			formError = 'An error occurred while shortening the link. Please try again later.'
 		}
 
-		loading = false
+		isLoading = false
 		link = ''
 	}
 </script>
@@ -60,15 +55,21 @@
 				<input
 					class="input input-bordered"
 					type="url"
+					name="link"
 					bind:value={link}
-					class:input-error={error !== null}
+					class:input-error={formError != null}
 					placeholder="https://example.com"
 				/>
 			</label>
 			{#if user != null}
 				<label class="label cursor-pointer pb-0">
 					<span class="label-text">Public link?</span>
-					<input type="checkbox" class="checkbox checkbox-accent" bind:checked={isPublic} />
+					<input
+						type="checkbox"
+						class="checkbox checkbox-accent"
+						name="isPublic"
+						bind:checked={isPublic}
+					/>
 				</label>
 			{/if}
 			<button class="btn btn-accent text-accent-content w-full mt-2" type="submit">Shorten</button>
@@ -76,25 +77,25 @@
 
 		<p
 			class="mt-4 text-sm font-semibold text-neutral-500"
-			class:error={error !== null}
-			class:succeed={!error && shortenedLink !== null}
+			class:error={formError != null}
+			class:succeed={!formError && shortenedLink != null}
 		>
-			{#if error != null}
-				{error}
-			{:else if shortenedLink !== null}
+			{#if formError != null}
+				{formError}
+			{:else if shortenedLink != null}
 				Your link has been shortened!
 			{:else}
 				Insert a link and then click on "Shorten"
 			{/if}
 		</p>
 
-		{#if loading}
+		{#if isLoading}
 			<div class="mt-4">
 				<span class="loading size-8 mx-auto"></span>
 			</div>
 		{/if}
 
-		{#if !loading && error === null && shortenedLink !== null}
+		{#if !isLoading && formError == null && shortenedLink != null}
 			<div class="divider"></div>
 
 			<div class="mx-auto" data-sveltekit-preload-data="off">

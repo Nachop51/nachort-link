@@ -1,4 +1,4 @@
-import { deleteLink, getFullLink, updatePublicLink } from '$lib/server/mongo'
+import { Link } from '$lib/server/links'
 import { getUser } from '$lib/server/user'
 import { json, type RequestHandler } from '@sveltejs/kit'
 
@@ -6,7 +6,7 @@ export const GET: RequestHandler = async ({ locals, params }) => {
 	const { shortLink } = params
 
 	const user = await getUser({ locals })
-	const linkDoc = await getFullLink({ shortLink })
+	const linkDoc = await Link.getFull({ shortLink })
 
 	if (linkDoc == null || (linkDoc.isPublic === false && user?.id !== linkDoc.ownerId)) {
 		return json({ error: 'Link not found' }, { status: 404 })
@@ -24,7 +24,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 
 	const { shortLink } = params
 
-	const link = await getFullLink({ shortLink })
+	const link = await Link.getFull({ shortLink })
 
 	if (link == null) {
 		return json({ error: 'Link not found' }, { status: 404 })
@@ -34,7 +34,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 		return json({ error: 'Unauthorized' }, { status: 401 })
 	}
 
-	const result = await deleteLink({ linkId: link._id.toString() })
+	const result = await Link.delete({ linkId: link._id })
 
 	if (!result) {
 		return json({ error: 'Failed to delete link' }, { status: 500 })
@@ -57,7 +57,7 @@ export const PATCH: RequestHandler = async ({ locals, request, params }) => {
 		return json({ error: 'No valid `isPublic` boolean provided' }, { status: 400 })
 	}
 
-	const link = await getFullLink({ shortLink })
+	const link = await Link.getFull({ shortLink })
 
 	if (link == null) {
 		return json({ error: 'Link not found' }, { status: 404 })
@@ -67,7 +67,7 @@ export const PATCH: RequestHandler = async ({ locals, request, params }) => {
 		return json({ error: 'Unauthorized' }, { status: 401 })
 	}
 
-	const result = await updatePublicLink({ linkId: link._id.toString(), isPublic })
+	const result = await Link.updatePublic({ linkId: link._id, isPublic })
 
 	if (!result) {
 		return json({ error: 'Failed to update link' }, { status: 500 })

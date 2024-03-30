@@ -4,16 +4,14 @@
 	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 	import CrossIcon from '$lib/components/icons/cross.svelte'
-	import { Api } from '$lib/services/api'
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
+	import { changeVisibility, deleteShortLink } from '$lib/services/api'
 	import { onDestroy } from 'svelte'
 
 	export let data: PageData
 
-	const { links } = data
-
-	const linkStore = createLinkStore(links)
+	const linkStore = createLinkStore(data.links)
 
 	async function handleChange({
 		shortLink,
@@ -31,7 +29,7 @@
 			return
 		}
 
-		if (await new Api().changeVisibility({ shortLink, isPublic: !isPublic })) {
+		if (await changeVisibility({ shortLink, isPublic: !isPublic })) {
 			linkStore.updateVisibility({ shortLink: shortLink, isPublic: !isPublic })
 		}
 	}
@@ -39,7 +37,7 @@
 	async function handleDelete({ shortLink }: { shortLink: string }) {
 		if (!confirm('Are you sure you want to delete this link?')) return
 
-		if (await new Api().deleteShortLink({ shortLink })) {
+		if (await deleteShortLink({ shortLink })) {
 			linkStore.remove({ shortLink })
 		}
 	}
@@ -77,6 +75,7 @@
 		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
 			{#each $linkStore.filtered as { shortLink, link: original, isPublic, visits }}
 				<article class="card shadow-xl border border-gray-600 relative">
+					<form method="post" action="/dashboard?/"></form>
 					<div class="card-body py-6">
 						<h3 class="card-title text-primary">
 							<a target="_blank" rel="noopener noreferrer" class="link" href={shortLink}>
@@ -117,6 +116,7 @@
 							<CopyIcon className="size-5" />
 						</button>
 						<button
+							formaction="/dashboard?/change"
 							on:click={async () => {
 								await handleDelete({ shortLink })
 							}}
