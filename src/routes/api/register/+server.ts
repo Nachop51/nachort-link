@@ -1,5 +1,5 @@
+import { User } from '$lib/server/user'
 import type { RequestHandler } from './$types'
-import { createUser, getDBUser } from '$lib/server/mongo'
 import { json } from '@sveltejs/kit'
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -16,13 +16,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		)
 	}
 
-	const existingUser = await getDBUser(handle)
+	const existingUser = await User.get(handle)
 
 	if (existingUser != null) {
 		return json({ error: 'User already exists' }, { status: 400 })
 	}
 
-	const result = await createUser({ handle, password })
+	const result = await User.create({ handle, password })
 
 	if (!result) {
 		return json({ error: 'Failed to create user' }, { status: 500 })

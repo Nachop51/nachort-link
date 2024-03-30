@@ -7,7 +7,7 @@ const client = new MongoClient(MONGO_URI)
 const db = client.db(DB_NAME)
 
 export class User {
-	static async create(user: UserType) {
+	static async create(user: UserInput) {
 		const collection = db.collection<UserInput>('users')
 
 		const result = await collection.insertOne(user)
