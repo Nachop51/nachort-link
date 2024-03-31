@@ -4,11 +4,13 @@
 	import { createShortlink } from '$lib/services/api.js'
 	import LinkIcon from '$lib/components/icons/link.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
+	import toast from 'svelte-french-toast'
+	import { copyWithToast } from '$lib/utils'
 
 	let link = ''
 	let isPublic = true
 
-	let shortenedLink: string | null = null
+	let shortenedLink: string
 	let isLoading = false
 	let formError: string | null = null
 
@@ -32,13 +34,17 @@
 			}
 			shortenedLink = await createShortlink({ link, isPublic })
 			shortenedLink = `${$page.url.origin}/${shortenedLink}`
+			toast.success('Link shortened!', { duration: 5000 })
 		} catch (e) {
 			formError = 'An error occurred while shortening the link. Please try again later.'
+			toast.error(formError, { duration: 5000 })
 		}
 
 		isLoading = false
 		link = ''
 	}
+
+	const exampleLinks = ['https://svelte.dev', 'https://tailwindcss.com', 'https://vitejs.dev']
 </script>
 
 <main class="min-h-size sm:-mt-6 md:-mt-12 flex items-center flex-col justify-center px-8">
@@ -110,7 +116,7 @@
 				</p>
 				<button
 					class="btn btn-accent btn-sm mx-auto text-base-100 flex items-center"
-					on:click={() => navigator.clipboard.writeText(`${shortenedLink}`)}
+					on:click={() => copyWithToast({ text: shortenedLink })}
 				>
 					Copy link
 					<CopyIcon className="" />
@@ -125,27 +131,12 @@
 		</header>
 
 		<div class="mt-4 flex gap-4 flex-wrap justify-center">
-			<button
-				class="btn btn-primary text-primary-content"
-				on:click={() => (link = 'https://svelte.dev')}
-			>
-				https://svelte.dev
-				<LinkIcon />
-			</button>
-			<button
-				class="btn btn-primary text-primary-content"
-				on:click={() => (link = 'https://tailwindcss.com')}
-			>
-				https://tailwindcss.com
-				<LinkIcon />
-			</button>
-			<button
-				class="btn btn-primary text-primary-content"
-				on:click={() => (link = 'https://vitejs.dev')}
-			>
-				https://vitejs.dev
-				<LinkIcon />
-			</button>
+			{#each exampleLinks as exampleLink}
+				<button class="btn btn-primary text-primary-content" on:click={() => (link = exampleLink)}>
+					{exampleLink}
+					<LinkIcon />
+				</button>
+			{/each}
 		</div>
 	</section>
 </main>

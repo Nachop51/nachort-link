@@ -40,6 +40,7 @@
 		"@auth/mongodb-adapter": "^2.1.0",
 		"@auth/sveltekit": "^0.8.0",
 		"bcrypt": "^5.1.1",
-		"mongodb": "~6.3.0"
+		"mongodb": "~6.3.0",
+		"svelte-french-toast": "^1.2.0"
 	}
 }

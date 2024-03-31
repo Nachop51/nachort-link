@@ -1,5 +1,7 @@
 import { LINK_FILTERS } from '$lib/constants'
+import { changeVisibility, deleteShortLink } from '$lib/services/api'
 import type { LinkFilterValues, LinkType } from '$lib/types'
+import toast from 'svelte-french-toast'
 import { writable } from 'svelte/store'
 
 export interface LinkStoreModel {
@@ -17,27 +19,60 @@ export const createLinkStore = (initialValue: Array<LinkType>) => {
 		search: ''
 	})
 
-	function remove({ shortLink }: { shortLink: string }) {
-		linkStore.update((state) => ({
-			...state,
-			links: state.links.filter((link) => link.shortLink !== shortLink)
-		}))
+	function deleteShorLink({ shortLink }: { shortLink: string }) {
+		deleteShortLink({ shortLink })
+			.then((deleted) => {
+				if (deleted === false) {
+					throw new Error('Error deleting link')
+				}
+
+				linkStore.update((state) => ({
+					...state,
+					links: state.links.filter((link) => link.shortLink !== shortLink)
+				}))
+				toast.success('Link deleted successfully')
+			})
+			.catch(() => {
+				toast.error('Error deleting link, try again later.')
+			})
 	}
 
 	function updateVisibility({ shortLink, isPublic }: { shortLink: string; isPublic: boolean }) {
-		linkStore.update((state) => ({
-			...state,
-			links: state.links.map((link) => {
-				if (link.shortLink === shortLink) {
-					return {
-						...link,
-						isPublic
-					}
-				}
+		linkStore.update((state) => {
+			const link = state.links.find((link) => link.shortLink === shortLink)
 
-				return link
+			if (!link) return state
+
+			link.isPublic = isPublic
+
+			return {
+				...state,
+				links: state.links.map((l) => (l.shortLink === shortLink ? link : l))
+			}
+		})
+
+		changeVisibility({ shortLink, isPublic })
+			.then((updated) => {
+				if (updated === false) {
+					throw new Error('Error updating visibility')
+				}
+				toast.success('Visibility updated successfully')
 			})
-		}))
+			.catch(() => {
+				toast.error('Error updating visibility, try again later.')
+				linkStore.update((state) => {
+					const link = state.links.find((link) => link.shortLink === shortLink)
+
+					if (!link) return state
+
+					link.isPublic = !isPublic
+
+					return {
+						...state,
+						links: state.links.map((l) => (l.shortLink === shortLink ? link : l))
+					}
+				})
+			})
 	}
 
 	function clearFilters() {
@@ -50,7 +85,7 @@ export const createLinkStore = (initialValue: Array<LinkType>) => {
 
 	return {
 		...linkStore,
-		remove,
+		deleteShorLink,
 		updateVisibility,
 		clearFilters
 	}

@@ -1,6 +1,12 @@
 import type { LinkType } from '$lib/types'
 
-export async function changeVisibility({ shortLink, isPublic }: { shortLink: string; isPublic: boolean }) {
+export async function changeVisibility({
+	shortLink,
+	isPublic
+}: {
+	shortLink: string
+	isPublic: boolean
+}) {
 	try {
 		const res = await fetch(`/api/shorten/${shortLink}`, {
 			method: 'PATCH',
@@ -17,7 +23,13 @@ export async function changeVisibility({ shortLink, isPublic }: { shortLink: str
 	}
 }
 
-export async function createShortlink({ link, isPublic }: { link: string; isPublic: boolean }) {
+export async function createShortlink({
+	link,
+	isPublic
+}: {
+	link: string
+	isPublic: boolean
+}): Promise<string> {
 	try {
 		const res = await fetch(`/api/shorten/`, {
 			method: 'POST',

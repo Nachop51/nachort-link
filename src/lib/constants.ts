@@ -14,9 +14,3 @@ export const LINK_FILTERS = {
 	PUBLIC: 'Public',
 	PRIVATE: 'Private'
 } as const
-
-// export const API_ERRORS = {
-// 	INVALID_LINK: json({ error: 'Invalid link' }, { status: 400 }),
-// 	NO_LINK_PROVIDED: json({ error: 'No link provided' }, { status: 400 }),
-// 	FAILED_TO_CREATE_LINK: json({ error: 'Failed to create link' }, { status: 500 })
-// }

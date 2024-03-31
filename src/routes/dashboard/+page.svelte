@@ -1,13 +1,14 @@
 <script lang="ts">
 	import type { PageData } from './$types'
 	import { page } from '$app/stores'
+	import { onDestroy } from 'svelte'
+
 	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 	import CrossIcon from '$lib/components/icons/cross.svelte'
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
-	import { changeVisibility, deleteShortLink } from '$lib/services/api'
-	import { onDestroy } from 'svelte'
+	import { copyWithToast } from '$lib/utils'
 
 	export let data: PageData
 
@@ -29,17 +30,13 @@
 			return
 		}
 
-		if (await changeVisibility({ shortLink, isPublic: !isPublic })) {
-			linkStore.updateVisibility({ shortLink: shortLink, isPublic: !isPublic })
-		}
+		linkStore.updateVisibility({ shortLink: shortLink, isPublic: !isPublic })
 	}
 
 	async function handleDelete({ shortLink }: { shortLink: string }) {
 		if (!confirm('Are you sure you want to delete this link?')) return
 
-		if (await deleteShortLink({ shortLink })) {
-			linkStore.remove({ shortLink })
-		}
+		linkStore.deleteShorLink({ shortLink })
 	}
 
 	const unsubscribe = linkStore.subscribe((value) => searchHandler(value))
@@ -108,9 +105,7 @@
 
 					<div class="flex absolute right-2 top-2">
 						<button
-							on:click={() => {
-								navigator.clipboard.writeText(`${$page.url.origin}/${shortLink}`)
-							}}
+							on:click={() => copyWithToast({ text: `${$page.url.origin}/${shortLink}` })}
 							class="btn btn-sm btn-circle btn-ghost"
 						>
 							<CopyIcon className="size-5" />
