@@ -55,7 +55,7 @@ export const handle = SvelteKitAuth({
 					return null
 				}
 
-				const user = await User.get(credentials.handle)
+				const user = await User.get({ handle: credentials.handle })
 
 				if (user == null) {
 					return null

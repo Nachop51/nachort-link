@@ -29,4 +29,9 @@ export enum THEME {
 	DARK = 'dark'
 }
 
+export enum SIGN_MODE {
+	SIGN_IN = 'sign-in',
+	SIGN_UP = 'sign-up'
+}
+
 export type LinkFilterValues = (typeof LINK_FILTERS)[keyof typeof LINK_FILTERS]

@@ -15,10 +15,10 @@ export class User {
 		return result
 	}
 
-	static async get(handle: string) {
+	static async get({ handle }: { handle: string }) {
 		const collection = db.collection<UserType>('users')
 
-		const user = await collection.findOne({ handle })
+		const user = await collection.findOne({ $or: [{ handle: handle }, { email: handle }] })
 
 		return user
 	}

@@ -1,40 +1,21 @@
 <script lang="ts">
-	import { signIn } from '@auth/sveltekit/client'
-	import { invalidateAll } from '$app/navigation'
 	import { onMount } from 'svelte'
 	import UserIcon from './icons/user.svelte'
-	import KeyIcon from './icons/key.svelte'
+	import CrossIcon from './icons/cross.svelte'
 	import GithubIcon from './icons/github.svelte'
 	import GoogleIcon from './icons/google.svelte'
-	import CrossIcon from './icons/cross.svelte'
 
-	let err = false
-	let handle: string
-	let password: string
+	import Login from './login.svelte'
+	import Signup from './signup.svelte'
+	import { SIGN_MODE } from '$lib/types.d'
+	import { signIn } from '@auth/sveltekit/client'
+
 	let dialogElement: HTMLDialogElement
+	let mode = SIGN_MODE.SIGN_IN
 
 	onMount(() => {
 		dialogElement = document.getElementById('login-menu') as HTMLDialogElement
 	})
-
-	const handleSignIn = async () => {
-		const res = await signIn('credentials', { handle, password, redirect: false })
-
-		if (res == null) {
-			err = true
-			return
-		}
-
-		const { url } = (await res.json()) as { url: string }
-
-		const params = new URLSearchParams(url.split('?')[1])
-
-		if (params.has('error')) {
-			err = true
-		} else {
-			invalidateAll()
-		}
-	}
 </script>
 
 <button class="btn btn-ghost text-lg" on:click={() => dialogElement.showModal()}>
@@ -51,26 +32,32 @@
 		</form>
 
 		<div class="max-w-sm w-full mx-auto">
-			<h2 class="font-bold text-3xl text-accent mb-2">Log In</h2>
+			<h2 class="font-bold text-3xl text-accent mb-2">
+				{#if mode === SIGN_MODE.SIGN_IN}
+					Log In
+				{:else}
+					Sign Up
+				{/if}
+			</h2>
 
 			<h3 class="text-xl mb-3">
-				Don't have an account? <button class="link link-accent">Sign Up</button>
+				{#if mode === SIGN_MODE.SIGN_IN}
+					Don't have an account? <button
+						class="link link-accent"
+						on:click={() => (mode = SIGN_MODE.SIGN_UP)}>Sign Up</button
+					>
+				{:else}
+					Already have an account? <button
+						class="link link-accent"
+						on:click={() => (mode = SIGN_MODE.SIGN_IN)}>Log In</button
+					>
+				{/if}
 			</h3>
 
-			<form class="flex flex-col items-stretch gap-2">
-				<label class="input input-bordered flex items-center gap-2">
-					<UserIcon />
-					<input type="text" bind:value={handle} class="grow" placeholder="cool_shortener_user" />
-				</label>
-				<label class="input input-bordered flex items-center gap-2">
-					<KeyIcon />
-					<input type="password" bind:value={password} placeholder="**********" class="grow" />
-				</label>
-
-				<button class="btn btn-accent" on:click={handleSignIn}>Log In</button>
-			</form>
-			{#if err}
-				<p class="text-error">Couldn't sign in, invalid credentials.</p>
+			{#if mode === SIGN_MODE.SIGN_IN}
+				<Login />
+			{:else}
+				<Signup />
 			{/if}
 
 			<div class="divider my-8 text-base">Or continue with</div>

@@ -9,10 +9,13 @@
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
 	import { copyWithToast } from '$lib/utils'
+	// import { invalidate } from '$app/navigation'
 
 	export let data: PageData
 
-	const linkStore = createLinkStore(data.links)
+	const { links } = data
+
+	const linkStore = createLinkStore(links)
 
 	async function handleChange({
 		shortLink,
@@ -49,6 +52,14 @@
 <main class="py-8 px-4">
 	{#if $linkStore.links.length > 0}
 		<h1 class="text-center text-5xl font-semibold mb-10">Manage your links</h1>
+
+		<!-- <button
+			on:click={async () => {
+				await invalidate('user-links')
+			}}
+		>
+			REFRESHHHHH
+		</button> -->
 
 		<section class="flex justify-center">
 			<div class="join">

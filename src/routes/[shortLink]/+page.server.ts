@@ -15,7 +15,7 @@ export const load = (async ({ params, locals }) => {
 	const user = await getUser({ locals })
 
 	if (linkData.isPublic === false && user?.id !== linkData.ownerId) {
-		throw error(401, 'Unauthorized')
+		throw error(404, 'Link not found')
 	}
 
 	await Link.registerVisit({ linkId: linkData._id })

@@ -18,7 +18,6 @@ export async function changeVisibility({
 
 		return res.ok
 	} catch (error) {
-		console.error(error)
 		return false
 	}
 }
@@ -63,20 +62,6 @@ export async function deleteShortLink({ shortLink }: { shortLink: string }) {
 
 		return res.ok
 	} catch (error) {
-		console.error(error)
 		return false
 	}
-}
-
-export async function getShortLink(shortLink: string) {
-	try {
-		const res = await fetch(`/api/shorten/${shortLink}`)
-
-		if (res.ok) {
-			return (await res.json()) as LinkType
-		}
-	} catch (error) {
-		console.error(error)
-	}
-	return null
 }
