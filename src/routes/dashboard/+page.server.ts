@@ -1,11 +1,13 @@
 import type { PageServerLoad } from './$types'
-import { error } from '@sveltejs/kit'
+import { redirect } from '@sveltejs/kit'
 import { Link } from '$lib/server/links'
 
 export const load = (async ({ parent, depends }) => {
 	const { user } = await parent()
 
-	if (user == null || user?.id == null) throw error(401, 'Unauthorized')
+	if (user == null || user?.id == null) {
+		throw redirect(302, '/')
+	}
 
 	const links = await Link.getFromUser({ userId: user.id })
 

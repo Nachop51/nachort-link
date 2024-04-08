@@ -15,12 +15,12 @@ export class User {
 		return result
 	}
 
-	static async get({ handle, password }: { handle: string; password: number }) {
+	static async get({ handle, password }: { handle: string; password: boolean }) {
 		const collection = db.collection<UserType>('users')
 
 		const user = await collection.findOne(
 			{ $or: [{ handle: handle }, { email: handle }] },
-			{ projection: { password } }
+			{ projection: { password: password ? 1 : 0 } }
 		)
 
 		return user
@@ -29,7 +29,15 @@ export class User {
 	static async getByID({ id }: { id: string }) {
 		const collection = db.collection<UserType>('users')
 
-		return await collection.findOne({ _id: new ObjectId(id) }, { projection: { password: 0 } })
+		return await collection.findOne({ _id: new ObjectId(id) }, { projection: { password: false } })
+	}
+
+	static async registerHandle({ id, handle }: { id: string; handle: string }) {
+		const collection = db.collection<UserType>('users')
+
+		const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: { handle } })
+
+		return result.acknowledged
 	}
 }
 

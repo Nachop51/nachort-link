@@ -6,6 +6,9 @@
 	import CopyIcon from '$lib/components/icons/copy.svelte'
 	import toast from 'svelte-french-toast'
 	import { copyWithToast } from '$lib/utils'
+	import type { PageServerData } from './$types'
+
+	export let data: PageServerData
 
 	let link = ''
 	let isPublic = true
@@ -14,7 +17,7 @@
 	let isLoading = false
 	let formError: string | null = null
 
-	$: user = $page.data.session?.user
+	$: ({ user } = data)
 
 	const handleSubmit = async () => {
 		if (isLoading) return

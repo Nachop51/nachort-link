@@ -1,23 +1,24 @@
 <script lang="ts">
-	import { page } from '$app/stores'
 	import { RANDOM_AVATAR_URL } from '$lib/constants'
+	import type { PageServerData } from '../$types'
 
-	const user = $page.data.session?.user
-	const name = user?.name ?? 'User'
+	export let data: PageServerData
 
-	const image = user?.image ?? `${RANDOM_AVATAR_URL}${name}.svg`
+	const { user } = data
 </script>
 
 <svelte:head>
-	<title>{name}'s - profile</title>
+	<title>{data.user?.handle}'s - profile</title>
 </svelte:head>
 
-<img
-	src={image}
-	width="200"
-	height="200"
-	alt={`${name} avatar`}
-	class="border-4 border-white rounded-full"
-/>
+<main class="px-4 py-8 flex flex-col items-center">
+	<img
+		src={user?.image ?? `${RANDOM_AVATAR_URL}${user?.handle}.svg`}
+		width="200"
+		height="200"
+		alt={`${user?.handle} avatar`}
+		class="border-4 border-white rounded-full"
+	/>
 
-<h1>{name}</h1>
+	<h1 class="text-4xl font-bold mt-4">@{user?.handle}</h1>
+</main>

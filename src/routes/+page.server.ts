@@ -1,7 +1,14 @@
 import { User } from '$lib/server/user'
 import { fail, type Actions } from '@sveltejs/kit'
 import { HASH_SALT_ROUNDS } from '$lib/constants'
+import type { PageServerLoad } from './$types'
 import bcrypt from 'bcrypt'
+
+export const load = (async ({ parent }) => {
+	const { user } = await parent()
+
+	return { user }
+}) satisfies PageServerLoad
 
 export const actions: Actions = {
 	registerUser: async ({ request }) => {
@@ -22,7 +29,7 @@ export const actions: Actions = {
 			return fail(400, { error: 'Email or password too short' })
 		}
 
-		const existingUser = await User.get({ handle: email, password: 0 })
+		const existingUser = await User.get({ handle: email, password: false })
 
 		if (existingUser != null) {
 			return fail(400, { error: 'Email already registered' })
