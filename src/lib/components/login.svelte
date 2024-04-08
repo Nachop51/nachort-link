@@ -41,5 +41,7 @@
 	<button class="btn btn-accent" on:click={handleSignIn}>Log In</button>
 </form>
 {#if err}
-	<p class="text-error">Couldn't sign in, invalid credentials.</p>
+	<p class="text-error text-bold text-base text-center mt-4">
+		Couldn't sign in, invalid credentials.
+	</p>
 {/if}

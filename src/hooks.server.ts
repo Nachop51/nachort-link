@@ -6,6 +6,7 @@ import { MongoDBAdapter } from '@auth/mongodb-adapter'
 import { SvelteKitAuth } from '@auth/sveltekit'
 import GitHub from '@auth/sveltekit/providers/github'
 import Google from '@auth/sveltekit/providers/google'
+import bcrypt from 'bcrypt'
 
 export const handle = SvelteKitAuth({
 	debug: false,
@@ -49,36 +50,44 @@ export const handle = SvelteKitAuth({
 				}
 			},
 			authorize: async (credentials) => {
-				const pwHash = credentials.password
-
-				if (typeof credentials.handle !== 'string') {
+				if (typeof credentials.handle !== 'string' || typeof credentials.password !== 'string') {
 					return null
 				}
 
-				const user = await User.get({ handle: credentials.handle })
+				const user = await User.get({ handle: credentials.handle, password: 1 })
 
 				if (user == null) {
 					return null
 				}
 
-				if (pwHash !== user.password) {
+				const match = await bcrypt.compare(credentials.password, user.password)
+
+				if (!match) {
 					return null
 				}
 
 				user.id = user._id.toString()
-				user.name = user.handle ?? user?.name ?? user?.email ?? 'Unknown'
 
-				return user
+				return {
+					...user
+				}
 			}
 		})
 	],
 	callbacks: {
+		jwt: async ({ token }) => {
+			const user = await User.getByID({ id: token.sub as string })
+
+			token.user = {
+				...user,
+				id: token.sub
+			}
+
+			return token
+		},
 		// @ts-expect-error it recognizes that the definition is wrong, but it's actually correct
 		session: async ({ session, token }) => {
-			// console.log({ session, token })
-			if (session?.user) {
-				session.user.id = token.sub
-			}
+			session.user = token.user
 
 			return session
 		}

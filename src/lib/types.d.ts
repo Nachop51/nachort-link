@@ -5,6 +5,7 @@ export type UserType = {
 	id: string
 	handle?: string
 	name?: string
+	image?: string
 	password: string
 	email?: string
 }

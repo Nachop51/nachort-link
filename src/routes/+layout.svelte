@@ -1,10 +1,12 @@
 <script lang="ts">
 	import '../app.css'
-	import { page } from '$app/stores'
 	import NavBar from '$lib/components/NavBar.svelte'
 	import { Toaster } from 'svelte-french-toast'
+	import type { LayoutServerData } from './$types'
 
-	$: user = $page.data.session?.user
+	export let data: LayoutServerData
+
+	$: ({ user } = data)
 </script>
 
 <svelte:head>

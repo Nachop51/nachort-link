@@ -1,10 +1,9 @@
 import type { PageServerLoad } from './$types'
 import { error } from '@sveltejs/kit'
-import { getUser } from '$lib/server/user'
 import { Link } from '$lib/server/links'
 
-export const load = (async ({ locals, depends }) => {
-	const user = await getUser({ locals })
+export const load = (async ({ parent, depends }) => {
+	const { user } = await parent()
 
 	if (user == null || user?.id == null) throw error(401, 'Unauthorized')
 

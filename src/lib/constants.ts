@@ -2,6 +2,7 @@
 
 export const DB_NAME = 'nachort'
 export const RANDOM_AVATAR_URL = 'https://api.dicebear.com/7.x/pixel-art/svg?seed='
+export const HASH_SALT_ROUNDS = 12
 
 export const RANDOM_STRING_LENGTH = 5
 export const VALID_URL_CHARACTERS =

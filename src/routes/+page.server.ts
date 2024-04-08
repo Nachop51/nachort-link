@@ -1,5 +1,7 @@
 import { User } from '$lib/server/user'
 import { fail, type Actions } from '@sveltejs/kit'
+import { HASH_SALT_ROUNDS } from '$lib/constants'
+import bcrypt from 'bcrypt'
 
 export const actions: Actions = {
 	registerUser: async ({ request }) => {
@@ -20,13 +22,17 @@ export const actions: Actions = {
 			return fail(400, { error: 'Email or password too short' })
 		}
 
-		const existingUser = await User.get({ handle: email })
+		const existingUser = await User.get({ handle: email, password: 0 })
 
 		if (existingUser != null) {
 			return fail(400, { error: 'Email already registered' })
 		}
 
-		const result = await User.create({ email, password })
+		// Generate secure password hash
+		const hashedPassword = await bcrypt.hash(password, HASH_SALT_ROUNDS)
+
+		// Create a user with the hashed password
+		const result = await User.create({ email, password: hashedPassword })
 
 		if (!result) {
 			return fail(500, { error: 'Failed to create user' })
