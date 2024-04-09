@@ -9,6 +9,7 @@
 
 	let handle: string
 	let password: string
+	let loading = false
 
 	async function signInTheApp({ handle, password }: { handle: string; password: string }) {
 		const res = await signIn('credentials', {
@@ -38,11 +39,17 @@
 	method="post"
 	class="flex flex-col items-stretch gap-2"
 	use:enhance={() => {
+		if (loading === true) {
+			return
+		}
+
+		loading = true
+
 		return async ({ result }) => {
-			console.log(result)
+			// console.log(result)
 
 			if (result.type === 'failure') {
-				console.log(result.data)
+				// console.log(result.data)
 
 				const errorMsg = result.data?.error ?? 'Something went wrong.'
 
@@ -50,16 +57,17 @@
 				toast.error(errorMsg, {
 					duration: 10000
 				})
+				loading = false
 			}
 			if (result.type === 'success') {
 				await applyAction(result)
 
-				console.log(result.data)
-
-				await signInTheApp({
-					handle: result.data?.email,
-					password: result.data?.password
-				})
+				if (typeof result.data?.email === 'string' && typeof result.data?.password === 'string') {
+					await signInTheApp({
+						handle: result.data?.email,
+						password: result.data?.password
+					})
+				}
 			}
 		}
 	}}
@@ -85,5 +93,5 @@
 		/>
 	</label>
 
-	<button class="btn btn-accent">Sign Up</button>
+	<button class="btn btn-accent" disabled={loading === true}>Sign Up</button>
 </form>
