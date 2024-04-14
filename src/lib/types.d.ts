@@ -10,7 +10,7 @@ export type UserType = {
 	email?: string
 }
 
-export type UserIdType = UserType['id']
+export type UserIdType = UserType['id'] | ObjectId
 
 export type UserInput = Omit<UserType, 'id' | 'name'>
 

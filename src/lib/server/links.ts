@@ -28,7 +28,7 @@ export class Link {
 			link,
 			shortLink,
 			isPublic: ownerId != null ? isPublic : true,
-			ownerId
+			ownerId: ownerId ? new ObjectId(ownerId) : null
 		})
 
 		if (result == null) {
@@ -77,13 +77,27 @@ export class Link {
 
 		const link = await collection.findOne({ shortLink })
 
-		return link
+		return link != null
+			? {
+					_id: link._id.toString(),
+					link: link.link,
+					shortLink: link.shortLink,
+					isPublic: link.isPublic,
+					visits: link.visits
+				}
+			: null
 	}
 
 	static async getFromUser({ userId }: { userId: UserIdType }) {
 		const collection = db.collection<LinkType>(LINKS_COLLECTION)
 
-		const links = await collection.find({ ownerId: userId }).toArray()
+		const links = (await collection.find({ ownerId: userId }).toArray()).map((link) => ({
+			_id: link._id.toString(),
+			link: link.link,
+			shortLink: link.shortLink,
+			isPublic: link.isPublic,
+			visits: link.visits
+		}))
 
 		if (links == null) {
 			return []
