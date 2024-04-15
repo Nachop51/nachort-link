@@ -1,6 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
 import { Link } from '$lib/server/links'
+import type { LinkType } from '$lib/types'
 
 export const load = (async ({ parent, depends }) => {
 	const { user } = await parent()
@@ -17,6 +18,6 @@ export const load = (async ({ parent, depends }) => {
 		links: links.map((link) => ({
 			...link,
 			_id: link._id.toString()
-		}))
+		})) as LinkType[]
 	}
 }) satisfies PageServerLoad

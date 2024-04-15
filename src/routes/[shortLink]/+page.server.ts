@@ -14,7 +14,7 @@ export const load = (async ({ params, locals }) => {
 
 	const user = await getUser({ locals })
 
-	if (linkData.isPublic === false && user?.id !== linkData.ownerId) {
+	if (linkData.isPublic === false && user?.id !== linkData.ownerId?.toString()) {
 		throw error(404, 'Link not found')
 	}
 

@@ -79,11 +79,8 @@ export class Link {
 
 		return link != null
 			? {
-					_id: link._id.toString(),
-					link: link.link,
-					shortLink: link.shortLink,
-					isPublic: link.isPublic,
-					visits: link.visits
+					...link,
+					_id: link._id.toString()
 				}
 			: null
 	}
@@ -91,13 +88,15 @@ export class Link {
 	static async getFromUser({ userId }: { userId: UserIdType }) {
 		const collection = db.collection<LinkType>(LINKS_COLLECTION)
 
-		const links = (await collection.find({ ownerId: userId }).toArray()).map((link) => ({
-			_id: link._id.toString(),
-			link: link.link,
-			shortLink: link.shortLink,
-			isPublic: link.isPublic,
-			visits: link.visits
-		}))
+		const links = (await collection.find({ ownerId: new ObjectId(userId) }).toArray()).map(
+			(link) => ({
+				_id: link._id.toString(),
+				link: link.link,
+				shortLink: link.shortLink,
+				isPublic: link.isPublic,
+				visits: link.visits
+			})
+		)
 
 		if (links == null) {
 			return []

@@ -30,7 +30,7 @@ export const DELETE: RequestHandler = async ({ locals, params }) => {
 		return json({ error: 'Link not found' }, { status: 404 })
 	}
 
-	if (user.id !== link.ownerId) {
+	if (user.id !== link.ownerId?.toString()) {
 		return json({ error: 'Unauthorized' }, { status: 401 })
 	}
 
@@ -63,7 +63,7 @@ export const PATCH: RequestHandler = async ({ locals, request, params }) => {
 		return json({ error: 'Link not found' }, { status: 404 })
 	}
 
-	if (user.id !== link.ownerId) {
+	if (user.id !== link.ownerId?.toString()) {
 		return json({ error: 'Unauthorized' }, { status: 401 })
 	}
 
