@@ -46,6 +46,8 @@
 
 		const { url } = (await res.json()) as { url: string }
 
+		console.log({ url })
+
 		const params = new URLSearchParams(url.split('?')[1])
 
 		if (params.has('error')) {

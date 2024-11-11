@@ -118,9 +118,6 @@ export const { handle } = SvelteKitAuth({
 			session.user = token.user
 
 			return session
-		},
-		redirect: async (props) => {
-			return props.baseUrl
 		}
 	},
 	pages: {

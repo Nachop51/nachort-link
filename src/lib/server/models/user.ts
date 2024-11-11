@@ -1,5 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { collections } from '../db'
+import type { Session } from '@auth/sveltekit'
 
 export default class User {
 	constructor(
@@ -63,7 +64,12 @@ export default class User {
 }
 
 export const getUser = async ({ locals }: { locals: App.Locals }) => {
-	const session = await locals.auth()
+	let session: Session | null
+	try {
+		session = await locals.auth()
+	} catch {
+		return null
+	}
 
 	if (session == null || session?.user == null) {
 		return null
