@@ -1,17 +1,18 @@
 import { LINK_FILTERS } from '$lib/constants'
+import type Link from '$lib/server/models/link'
 import { changeVisibility, deleteShortLink } from '$lib/services/api'
-import type { LinkFilterValues, LinkType } from '$lib/types'
+import type { LinkFilterValues } from '$lib/types'
 import toast from 'svelte-french-toast'
 import { writable } from 'svelte/store'
 
 export interface LinkStoreModel {
-	links: Array<LinkType>
-	filtered: Array<LinkType>
+	links: Array<Link>
+	filtered: Array<Link>
 	filterBy: LinkFilterValues
 	search: string
 }
 
-export const createLinkStore = (initialValue: Array<LinkType>) => {
+export const createLinkStore = (initialValue: Array<Link>) => {
 	const linkStore = writable<LinkStoreModel>({
 		links: initialValue,
 		filtered: initialValue,

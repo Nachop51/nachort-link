@@ -1,3 +1,4 @@
+import { TOAST_DURATIONS } from '$lib/constants'
 import toast from 'svelte-french-toast'
 
 export const copyWithToast = ({ text }: { text: string }) => {
@@ -11,6 +12,7 @@ export const copyWithToast = ({ text }: { text: string }) => {
 		iconTheme: {
 			primary: '#09f',
 			secondary: '#fff'
-		}
+		},
+		duration: TOAST_DURATIONS.SHORT
 	})
 }

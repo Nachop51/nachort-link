@@ -3,7 +3,9 @@
 	import NodeJS from 'node:process'
 	import toast from 'svelte-french-toast'
 	import { enhance } from '$app/forms'
-	import { goto } from '$app/navigation'
+	import { goto, invalidate } from '$app/navigation'
+	import { DATA_SERVER_NAMES, TOAST_DURATIONS } from '$lib/constants'
+	import { validateHandle } from '$lib/schemas/user'
 
 	let formEl: HTMLFormElement
 
@@ -16,9 +18,7 @@
 	let isAvailable = false
 	let loading = false
 
-	const re = /^(?=[a-zA-Z0-9._]{3,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/
-
-	$: isValid = handle?.length > 3 && handle?.length < 16 && re.test(handle)
+	$: isValid = validateHandle({ handle }).success
 	$: isTouched = handle?.length > 0
 	$: isTaken = isValid && !isAvailable && !loading
 
@@ -56,7 +56,7 @@
 				if (!res.ok) {
 					throw new Error('An error occurred while checking the username')
 				}
-			} catch (error) {
+			} catch {
 				toast.error('An error occurred while checking the username')
 			}
 
@@ -85,13 +85,14 @@
 				loading = true
 				return ({ result }) => {
 					if (result.type === 'success') {
+						invalidate(DATA_SERVER_NAMES.USER)
 						toast(
 							`Successfully registered your username!
 							Welcome to Linkly, ${handle}! We love having you here. 😊
 
 							Let's start by shorten your first link.
 							Hope you enjoy your stay! 🎉`,
-							{ duration: 10000 }
+							{ duration: TOAST_DURATIONS.LONG }
 						)
 						goto('/')
 					}
@@ -111,7 +112,7 @@
 			/>
 
 			{#if isTouched && !isValid}
-				<p class="text-sm text-error">Username must be between 3 and 16 characters</p>
+				<p class="text-sm text-error">Username must be between 3 and 16 alphanumeric characters</p>
 			{/if}
 
 			{#if isTaken}

@@ -15,10 +15,6 @@ html {
 	font-optical-sizing: auto;
 }
 
-body {
-	@apply relative;
-}
-
 .min-h-size {
-	min-height: calc(100vh - 6rem);
+	@apply min-h-[calc(100dvh-4rem)] sm:min-h-[calc(100dvh-6rem)];
 }

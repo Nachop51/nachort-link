@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation'
+	import { goto, invalidate } from '$app/navigation'
 	import { signIn } from '@auth/sveltekit/client'
-	import KeyIcon from './icons/key.svelte'
-	import UserIcon from './icons/user.svelte'
+	import KeyIcon from '$lib/components/icons/key.svelte'
+	import UserIcon from '$lib/components/icons/user.svelte'
 	import { applyAction, enhance } from '$app/forms'
 	import { error } from '@sveltejs/kit'
 	import toast from 'svelte-french-toast'
+	import { DATA_SERVER_NAMES, TOAST_DURATIONS } from '$lib/constants'
 
 	let handle: string
 	let password: string
@@ -29,15 +30,15 @@
 		if (params.has('error')) {
 			throw error(500, 'Something went wrong, please try again later.')
 		} else {
-			invalidateAll()
+			invalidate(DATA_SERVER_NAMES.USER)
 		}
 	}
 </script>
 
 <form
-	action="?/registerUser"
+	action="/login?/registerUser"
 	method="post"
-	class="flex flex-col items-stretch gap-2"
+	class="flex flex-col items-stretch gap-2 w-full"
 	use:enhance={() => {
 		if (loading === true) {
 			return
@@ -46,16 +47,12 @@
 		loading = true
 
 		return async ({ result }) => {
-			// console.log(result)
-
 			if (result.type === 'failure') {
-				// console.log(result.data)
-
 				const errorMsg = result.data?.error ?? 'Something went wrong.'
 
 				// @ts-expect-error errorMsg is a string
 				toast.error(errorMsg, {
-					duration: 10000
+					duration: TOAST_DURATIONS.LONG
 				})
 				loading = false
 			}
@@ -67,12 +64,14 @@
 						handle: result.data?.email,
 						password: result.data?.password
 					})
+
+					goto('/create-handle')
 				}
 			}
 		}
 	}}
 >
-	<label class="input input-bordered flex items-center gap-2">
+	<label class="input input-primary input-bordered flex items-center gap-2">
 		<UserIcon />
 		<input
 			type="email"
@@ -82,7 +81,7 @@
 			placeholder="user@linkly.com"
 		/>
 	</label>
-	<label class="input input-bordered flex items-center gap-2">
+	<label class="input input-primary input-bordered flex items-center gap-2">
 		<KeyIcon />
 		<input
 			type="password"
@@ -93,5 +92,5 @@
 		/>
 	</label>
 
-	<button class="btn btn-accent" disabled={loading === true}>Sign Up</button>
+	<button class="btn btn-secondary" disabled={loading === true}>Sign Up</button>
 </form>

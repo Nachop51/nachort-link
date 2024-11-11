@@ -1,4 +1,4 @@
-import type { LinkType } from '$lib/types'
+import type Link from '$lib/server/models/link'
 
 export async function changeVisibility({
 	shortLink,
@@ -17,34 +17,42 @@ export async function changeVisibility({
 		})
 
 		return res.ok
-	} catch (error) {
+	} catch {
 		return false
 	}
 }
 
 export async function createShortlink({
 	link,
-	isPublic
-}: {
-	link: string
-	isPublic: boolean
+	isPublic,
+	custom,
+	customShortlink
+}: Pick<Link, 'link' | 'isPublic' | 'custom'> & {
+	customShortlink?: Link['shortLink']
 }): Promise<string> {
+	const payload = {
+		link,
+		isPublic: !isPublic ? false : undefined,
+		custom: custom ? custom : undefined,
+		customShortlink: custom ? customShortlink : undefined
+	}
+
 	try {
 		const res = await fetch(`/api/shorten/`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ link, isPublic })
+			body: JSON.stringify(payload)
 		})
 
-		if (res.ok) {
-			const data = (await res.json()) as LinkType
+		const json = await res.json()
 
-			return data.shortLink
+		if (res.ok) {
+			return (json as Link).shortLink
 		}
 
-		throw new Error('Failed to create link, please try again later.')
+		throw new Error(json.error)
 	} catch (e) {
 		if (e instanceof Error) {
 			throw Error(e.message)
@@ -61,7 +69,7 @@ export async function deleteShortLink({ shortLink }: { shortLink: string }) {
 		})
 
 		return res.ok
-	} catch (error) {
+	} catch {
 		return false
 	}
 }

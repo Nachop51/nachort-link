@@ -1,4 +1,4 @@
-import { RANDOM_STRING_LENGTH, VALID_URL_CHARACTERS } from './constants'
+import { RANDOM_STRING_LENGTH, VALID_URL_CHARACTERS } from '../constants'
 
 export const randomShortLink = () => {
 	let result = ''
@@ -10,12 +10,20 @@ export const randomShortLink = () => {
 	return result
 }
 
+export const isValidShortLink = (shortLink: string) => {
+	return (
+		shortLink.length > 2 &&
+		shortLink.length < 10 &&
+		shortLink.split('').every((char) => VALID_URL_CHARACTERS.includes(char))
+	)
+}
+
 export function isValidHttpUrl(link: string) {
 	let url
 
 	try {
 		url = new URL(link)
-	} catch (_) {
+	} catch {
 		return false
 	}
 

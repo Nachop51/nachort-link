@@ -1,8 +1,10 @@
-import { getUser } from '$lib/server/user'
 import { redirect } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
+import { getUser } from '$lib/server/models/user'
+import { DATA_SERVER_NAMES } from '$lib/constants'
 
-export const load: LayoutServerLoad = async ({ locals, url }) => {
+export const load = (async ({ locals, url, depends }) => {
+	depends(DATA_SERVER_NAMES.USER)
 	const user = await getUser({ locals })
 
 	if (user != null) {
@@ -11,7 +13,5 @@ export const load: LayoutServerLoad = async ({ locals, url }) => {
 		}
 	}
 
-	return {
-		user
-	}
-}
+	return { user }
+}) satisfies LayoutServerLoad

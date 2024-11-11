@@ -1,21 +1,48 @@
 import type { RequestHandler } from './$types'
 import { json } from '@sveltejs/kit'
-import { isValidHttpUrl } from '$lib/links'
-import { getUser } from '$lib/server/user'
-import { Link } from '$lib/server/links'
+import { getUser } from '$lib/server/models/user'
+import Link from '$lib/server/models/link'
+import { validateLink } from '$lib/schemas/link'
+import { randomShortLink } from '$lib/utils/links'
 
 export const POST: RequestHandler = async ({ locals, request }) => {
-	const { link, isPublic } = (await request.json()) as { link: string; isPublic: boolean }
+	let body: unknown
 
-	if (isValidHttpUrl(link) === false) {
-		return json({ error: 'Invalid link' }, { status: 400 })
+	try {
+		body = await request.json()
+	} catch {
+		return json({ error: 'Invalid JSON body' }, { status: 400 })
 	}
+
+	const result = validateLink(body)
+
+	if (!result.success) {
+		return json({ error: JSON.parse(result.error.message) }, { status: 400 })
+	}
+
+	const { link, isPublic, customShortlink } = result.data
 
 	const user = await getUser({ locals })
 
-	const shortLink = await Link.create({ link, isPublic, ownerId: user?.id ?? null })
+	if (customShortlink != null) {
+		const existing = await Link.getCustom({ shortLink: customShortlink, handle: user?.handle })
 
-	if (shortLink == null) {
+		if (existing != null) {
+			return json({ error: `Shortlink '${customShortlink}' already exists` }, { status: 400 })
+		}
+	}
+
+	const shortLink = customShortlink ?? randomShortLink()
+
+	const newLinkResult = await Link.create({
+		link,
+		isPublic: user ? isPublic : true,
+		ownerId: user?._id ?? null,
+		custom: customShortlink != null,
+		shortLink
+	})
+
+	if (newLinkResult == false) {
 		return json({ error: 'Failed to create link' }, { status: 500 })
 	}
 

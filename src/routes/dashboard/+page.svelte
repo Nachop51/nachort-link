@@ -3,17 +3,16 @@
 	import { page } from '$app/stores'
 	import { onDestroy } from 'svelte'
 
-	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CopyIcon from '$lib/components/icons/copy.svelte'
+	import EyeIcon from '$lib/components/icons/eye.svelte'
 	import CrossIcon from '$lib/components/icons/cross.svelte'
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
-	import { copyWithToast } from '$lib/utils'
-	// import { invalidate } from '$app/navigation'
+	import { copyWithToast } from '$lib/utils/toast'
 
 	export let data: PageData
 
-	const { links } = data
+	const { links, user } = data
 
 	const linkStore = createLinkStore(links)
 
@@ -49,17 +48,13 @@
 	})
 </script>
 
-<main class="py-8 px-4">
+<svelte:head>
+	<title>{user.handle}'s Dashboard</title>
+</svelte:head>
+
+<main class="px-4">
 	{#if $linkStore.links.length > 0}
 		<h1 class="text-center text-5xl font-semibold mb-10">Manage your links</h1>
-
-		<!-- <button
-			on:click={async () => {
-				await invalidate('user-links')
-			}}
-		>
-			REFRESHHHHH
-		</button> -->
 
 		<section class="flex justify-center">
 			<div class="join">
@@ -134,7 +129,7 @@
 				</article>
 			{:else}
 				<div class="text-center" style="grid-column: 1/-1;">
-					<h1 class="text-4xl font-semibold my-8 text-neutral-content">
+					<h1 class="text-3xl font-semibold my-8 text-neutral-content">
 						Oops there is no links with those filters.
 					</h1>
 					<p class="text-lg text-neutral-content">Try using another combinations!</p>

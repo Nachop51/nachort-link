@@ -9,19 +9,17 @@
 
 		if (preferredTheme) {
 			theme = preferredTheme as THEME
-		} else if (window?.matchMedia('(prefers-color-scheme: light)').matches) {
+		} else if (window?.matchMedia('prefers-color-scheme: light').matches) {
 			theme = THEME.LIGHT
 		}
 
 		document.documentElement.setAttribute('data-theme', theme)
 	})
 
-	const handleChangeTheme = () => {
-		const newTheme = theme === THEME.LIGHT ? THEME.DARK : THEME.LIGHT
+	function handleChangeTheme() {
+		theme = theme === THEME.DARK ? THEME.LIGHT : THEME.DARK
 
-		theme = newTheme
-		document.documentElement.setAttribute('data-theme', newTheme)
-
+		document.documentElement.setAttribute('data-theme', theme)
 		localStorage.setItem('theme', theme)
 	}
 </script>

@@ -1,23 +1,22 @@
 import type { PageServerLoad } from './$types'
 import { redirect } from '@sveltejs/kit'
-import { Link } from '$lib/server/links'
-import type { LinkType } from '$lib/types'
+import Link from '$lib/server/models/link'
 
-export const load = (async ({ parent, depends }) => {
+export const load = (async ({ parent }) => {
 	const { user } = await parent()
 
-	if (user == null || user?.id == null) {
+	if (user == null || user?._id == null) {
 		throw redirect(302, '/')
 	}
 
-	const links = await Link.getFromUser({ userId: user.id })
-
-	depends('user-links')
+	const links = await Link.getFromUser({ ownerId: user._id })
 
 	return {
+		user,
 		links: links.map((link) => ({
 			...link,
-			_id: link._id.toString()
-		})) as LinkType[]
+			_id: link._id.toString(),
+			ownerId: link.ownerId?.toString()
+		})) as Array<Link>
 	}
 }) satisfies PageServerLoad
