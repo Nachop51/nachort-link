@@ -11,6 +11,7 @@ import User from './models/user'
 import bcrypt from 'bcrypt'
 
 export const { handle } = SvelteKitAuth({
+	trustHost: true,
 	debug: false,
 	adapter: MongoDBAdapter(client, {
 		databaseName: 'nachort',
@@ -23,10 +24,11 @@ export const { handle } = SvelteKitAuth({
 	}),
 	logger: {
 		error(code, ...message) {
+			console.error(...message)
 			if (code.name === 'CredentialsSignin') {
 				return
 			} else {
-				console.error(...message)
+				console.error(code, ...message)
 			}
 		}
 	},
@@ -41,7 +43,6 @@ export const { handle } = SvelteKitAuth({
 			clientSecret: GOOGLE_SECRET
 		}),
 		Credentials({
-			name: 'credentials',
 			credentials: {
 				handle: {
 					type: 'text',

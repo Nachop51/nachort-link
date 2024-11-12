@@ -8,8 +8,8 @@
 	import toast from 'svelte-french-toast'
 	import { DATA_SERVER_NAMES, TOAST_DURATIONS } from '$lib/constants'
 
-	let handle: string
-	let password: string
+	let handle: string = ''
+	let password: string = ''
 	let loading = false
 
 	async function signInTheApp({ handle, password }: { handle: string; password: string }) {
@@ -23,9 +23,13 @@
 			throw error(500, 'Something went wrong, please try again later.')
 		}
 
-		const { url } = (await res.json()) as { url: string }
+		const data = (await res.json()) as { url: string }
 
-		const params = new URLSearchParams(url.split('?')[1])
+		if (data.url == null) {
+			throw error(500, 'Something went wrong, please try again later.')
+		}
+
+		const params = new URLSearchParams(data.url.split('?')[1])
 
 		if (params.has('error')) {
 			throw error(500, 'Something went wrong, please try again later.')

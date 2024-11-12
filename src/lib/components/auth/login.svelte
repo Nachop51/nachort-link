@@ -44,11 +44,17 @@
 			return
 		}
 
-		const { url } = (await res.json()) as { url: string }
+		const data = (await res.json()) as { url: string }
 
-		console.log({ url })
+		if (data.url == null) {
+			err = {
+				...err,
+				message: 'An error occurred while signing in'
+			}
+			return
+		}
 
-		const params = new URLSearchParams(url.split('?')[1])
+		const params = new URLSearchParams(data.url.split('?')[1])
 
 		if (params.has('error')) {
 			err = {
