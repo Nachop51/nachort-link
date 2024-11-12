@@ -18,15 +18,16 @@ export default class Link {
 		ownerId,
 		isPublic,
 		shortLink,
-		custom
-	}: Pick<Link, 'link' | 'ownerId' | 'isPublic' | 'shortLink' | 'custom'>) {
+		custom,
+		isAdmin
+	}: Pick<Link, 'link' | 'ownerId' | 'isPublic' | 'shortLink' | 'custom'> & Pick<User, 'isAdmin'>) {
 		try {
 			const result = await collections.links.insertOne({
 				shortLink,
 				link,
 				ownerId: ownerId != null ? new ObjectId(ownerId) : null,
 				isPublic,
-				custom
+				custom: isAdmin ? false : custom
 			})
 
 			if (result.acknowledged === false) {

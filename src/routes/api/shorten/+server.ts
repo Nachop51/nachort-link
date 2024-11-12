@@ -39,7 +39,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		isPublic: user ? isPublic : true,
 		ownerId: user?._id ?? null,
 		custom: customShortlink != null,
-		shortLink
+		shortLink,
+		isAdmin: user?.isAdmin
 	})
 
 	if (newLinkResult == false) {

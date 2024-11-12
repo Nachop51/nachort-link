@@ -6,7 +6,8 @@ export const userSchema = z.object({
 	password: z.string().min(6),
 	handle: z.string().refine((handle) => HANDLE_REGEX.test(handle), {
 		message: `Handle must be between ${MINIMUM_HANDLE_LENGTH} and ${MAXIMUM_HANDLE_LENGTH} characters long and can only contain letters, numbers, periods, and underscores`
-	})
+	}),
+	isAdmin: z.boolean().optional().default(false)
 })
 
 export function validateSignIn(data: unknown) {
@@ -19,4 +20,8 @@ export function validateHandle(data: unknown) {
 
 export function validateEmail(data: unknown) {
 	return userSchema.pick({ email: true }).safeParse(data)
+}
+
+export function validateIsAdmin(data: unknown) {
+	return userSchema.pick({ isAdmin: true }).safeParse(data)
 }

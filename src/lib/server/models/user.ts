@@ -8,7 +8,8 @@ export default class User {
 		public _id?: ObjectId | string,
 		public name?: string,
 		public handle?: string,
-		public password?: string
+		public password?: string,
+		public isAdmin?: boolean
 	) {}
 
 	static async create({ email, password }: Pick<User, 'email' | 'password'>) {

@@ -16,66 +16,70 @@
 	<section
 		class="flex flex-col items-start justify-center bg-base-100 px-6 sm:px-12 min-h-size pb-16 sm:pb-24"
 	>
-		<h2 class="font-bold text-5xl text-primary mb-2">
-			{isLogginIn ? 'Log in' : 'Sign up'}
-		</h2>
+		<div class="max-w-xl mx-auto w-full">
+			<h2 class="font-bold text-5xl text-primary mb-2">
+				{isLogginIn ? 'Log in' : 'Sign up'}
+			</h2>
 
-		<h3 class="text-xl mb-3">
-			{isLogginIn ? 'Welcome back linkler!' : 'Create an account to start shortening links!'}
-		</h3>
+			<h3 class="text-xl mb-3">
+				{isLogginIn ? 'Welcome back linkler!' : 'Create an account to start shortening links!'}
+			</h3>
 
-		{#if isLogginIn}
-			<Login />
-		{:else}
-			<Signup />
-		{/if}
+			{#if isLogginIn}
+				<Login />
+			{:else}
+				<Signup />
+			{/if}
 
-		<button on:click={handleChange} class="text-sm mt-4">
-			Don't have an account?
-			<span class="underline text-accent">
-				{isLogginIn ? 'Sign up' : 'Log in'}
-			</span>
-		</button>
-
-		<div class="divider divider-accent my-8 text-neutral">Or continue with</div>
-
-		<div class="text [&>button]:mb-2 w-full">
-			<button class="btn btn-primary text-base w-full" on:click={() => signIn('google')}>
-				<GoogleIcon /> Google
+			<button on:click={handleChange} class="text-sm mt-4">
+				Don't have an account?
+				<span class="underline text-accent">
+					{isLogginIn ? 'Sign up' : 'Log in'}
+				</span>
 			</button>
 
-			<button class="btn btn-primary text-base w-full" on:click={() => signIn('github')}>
-				<GithubIcon /> GitHub
-			</button>
+			<div class="divider divider-accent my-8 text-neutral">Or continue with</div>
+
+			<div class="text [&>button]:mb-2 w-full">
+				<button class="btn btn-primary text-base w-full" on:click={() => signIn('google')}>
+					<GoogleIcon /> Google
+				</button>
+
+				<button class="btn btn-primary text-base w-full" on:click={() => signIn('github')}>
+					<GithubIcon /> GitHub
+				</button>
+			</div>
 		</div>
 	</section>
 
 	<div class="gradient-divider"></div>
 
 	<section class="grid place-content-center px-6 sm:px-12 gap-8 py-20 md:pb-24">
-		<h1 class="text-5xl font-extrabold">Shorten your links with Linkly in just one go!</h1>
+		<div class="max-w-xl mx-auto w-full">
+			<h1 class="text-5xl font-extrabold">Shorten your links with Linkly in just one go!</h1>
 
-		<div class="text-xl">
-			<p class="text-center"><span class="highlight">Transform</span> this weird thing:</p>
-			<a
-				href="https://onlineminitools.com/long-url-maker?r=iIIIIiIIiiIiiiIiiIIiIIiiiIIiIIIIiIIiIIIiiIIiiIIIiIiIiIiIiIIIiiIiiIIiIIiiiiIiiiIiiiIIIiIiiiIiiiIiiIIiIiiiiIIIiIiiiIIIiIiiiIIIiiiiiIIIiiIIiiIIIiIiiIiIIIiiiiIiIIIIiIiIIIiiiiIiIIIIiIIIiIIIiIIIiIIIiIIIiIIIiiIiIIIiiIIIIiiIiIIiIIIIiIIIiIiIiIIIiIiiiIIIiIiIiIIiiiIiiIIiiIiIiiIiIIIiiIIiiiIIiIIiIIIIiIIiIIiIiIiIIIiiiiIiIIIIiIIIiIIIiIIiiiiIiIIIiIiiiIIiiiIIiIIiIiiiiiIIIIIIiIIIiIIiiiIIIIiIiIIiiIiiiIiIiiiIiIIIiIIIiiIIiIiiiIIIiIIIiiIIIiiIiIiIiIIIiIIiiIIIiIiIIiiiiIIiiiIIiIiIiiiIiiIiiiIiiiIiIIiiiiIiiiIiiIIIiiIIiIIIiIiiiIIIiiIiiIIiiiiIiIIIiIiiiIIiiIiIiIIiiIIIiIIIIiiIiiIiiiIiiiIIIiIiiiIIiiiIiiIiIIiiiiIiiiIiiIIIiIiIiIIIiiIIiIIiiIiIiIIiIIiiiIIiiIiIiIIIiiIIiIIIiiIIiIiiiIiiiIIiiiiIiIIIiIiiiIIiiiiIiiIiiiIiiiIIIiIiiiIiiiIiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIiiiIiiIIIIIiI"
-				title="https://onlineminitools.com/long-url-maker?r=iIIIIiIIiiIiiiIiiIIiIIiiiIIiIIIIiIIiIIIiiIIiiIIIiIiIiIiIiIIIiiIiiIIiIIiiiiIiiiIiiiIIIiIiiiIiiiIiiIIiIiiiiIIIiIiiiIIIiIiiiIIIiiiiiIIIiiIIiiIIIiIiiIiIIIiiiiIiIIIIiIiIIIiiiiIiIIIIiIIIiIIIiIIIiIIIiIIIiIIIiiIiIIIiiIIIIiiIiIIiIIIIiIIIiIiIiIIIiIiiiIIIiIiIiIIiiiIiiIIiiIiIiiIiIIIiiIIiiiIIiIIiIIIIiIIiIIIiIiIiIIIiiiiIiIIIIiIIIiIIIiIIiiiiIiIIIiIiiiIIiiiIIiIIiIiiiiiIIIIIIiIIIiIIiiiIIIIiIiIIiiIiiiIiIiiiIiIIIiIIIiiIIiIiiiIIIiIIIiiIIIiiIiIiIiIIIiIIiiIIIiIiIIiiiiIIiiiIIiIiIiiiIiiIiiiIiiiIiIIiiiiIiiiIiiIIIiiIIiIIIiIiiiIIIiiIiiIIiiiiIiIIIiIiiiIIiiIiIiIIiiIIIiIIIIiiIiiIiiiIiiiIIIiIiiiIIiiiIiiIiIIiiiiIiiiIiiIIIiIiIiIIIiiIIiIIiiIiIiIIiIIiiiIIiiIiIiIIIiiIIiIIIiiIIiIiiiIiiiIIiiiiIiIIIiIiiiIIiiiiIiiIiiiIiiiIIIiIiiiIiiiIiii"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="link link-accent text-ellipsis overflow-hidden break-all whitespace-pre-wrap"
-				>https://onlineminitools.com/long-url-maker?r=iIIIIiIIiiIiiiIiiIIiIIiiiIIiIIIIiIIiIIIiiIIiiIIIiIiIiIiIiIIIiiIiiIIiIIiiiiIiiiIiiiIIIiIiiiIiiiIiiIIiIiiiiIIIiIiiiIIIiIiiiIIIiiiiiIIIii...</a
-			>
-
-			<p class="text-center"><span class="highlight">Into</span> this:</p>
-
-			<p class="text-center">
+			<div class="text-xl">
+				<p class="text-center"><span class="highlight">Transform</span> this weird thing:</p>
 				<a
-					href="http://links.nachop.xyz/@p2Kp"
+					href="https://onlineminitools.com/long-url-maker?r=iIIIIiIIiiIiiiIiiIIiIIiiiIIiIIIIiIIiIIIiiIIiiIIIiIiIiIiIiIIIiiIiiIIiIIiiiiIiiiIiiiIIIiIiiiIiiiIiiIIiIiiiiIIIiIiiiIIIiIiiiIIIiiiiiIIIiiIIiiIIIiIiiIiIIIiiiiIiIIIIiIiIIIiiiiIiIIIIiIIIiIIIiIIIiIIIiIIIiIIIiiIiIIIiiIIIIiiIiIIiIIIIiIIIiIiIiIIIiIiiiIIIiIiIiIIiiiIiiIIiiIiIiiIiIIIiiIIiiiIIiIIiIIIIiIIiIIiIiIiIIIiiiiIiIIIIiIIIiIIIiIIiiiiIiIIIiIiiiIIiiiIIiIIiIiiiiiIIIIIIiIIIiIIiiiIIIIiIiIIiiIiiiIiIiiiIiIIIiIIIiiIIiIiiiIIIiIIIiiIIIiiIiIiIiIIIiIIiiIIIiIiIIiiiiIIiiiIIiIiIiiiIiiIiiiIiiiIiIIiiiiIiiiIiiIIIiiIIiIIIiIiiiIIIiiIiiIIiiiiIiIIIiIiiiIIiiIiIiIIiiIIIiIIIIiiIiiIiiiIiiiIIIiIiiiIIiiiIiiIiIIiiiiIiiiIiiIIIiIiIiIIIiiIIiIIiiIiIiIIiIIiiiIIiiIiIiIIIiiIIiIIIiiIIiIiiiIiiiIIiiiiIiIIIiIiiiIIiiiiIiiIiiiIiiiIIIiIiiiIiiiIiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIIiiIIiiIIiIiiiiIiiiIiiIIIIIiI"
+					title="https://onlineminitools.com/long-url-maker?r=iIIIIiIIiiIiiiIiiIIiIIiiiIIiIIIIiIIiIIIiiIIiiIIIiIiIiIiIiIIIiiIiiIIiIIiiiiIiiiIiiiIIIiIiiiIiiiIiiIIiIiiiiIIIiIiiiIIIiIiiiIIIiiiiiIIIiiIIiiIIIiIiiIiIIIiiiiIiIIIIiIiIIIiiiiIiIIIIiIIIiIIIiIIIiIIIiIIIiIIIiiIiIIIiiIIIIiiIiIIiIIIIiIIIiIiIiIIIiIiiiIIIiIiIiIIiiiIiiIIiiIiIiiIiIIIiiIIiiiIIiIIiIIIIiIIiIIIiIiIiIIIiiiiIiIIIIiIIIiIIIiIIiiiiIiIIIiIiiiIIiiiIIiIIiIiiiiiIIIIIIiIIIiIIiiiIIIIiIiIIiiIiiiIiIiiiIiIIIiIIIiiIIiIiiiIIIiIIIiiIIIiiIiIiIiIIIiIIiiIIIiIiIIiiiiIIiiiIIiIiIiiiIiiIiiiIiiiIiIIiiiiIiiiIiiIIIiiIIiIIIiIiiiIIIiiIiiIIiiiiIiIIIiIiiiIIiiIiIiIIiiIIIiIIIIiiIiiIiiiIiiiIIIiIiiiIIiiiIiiIiIIiiiiIiiiIiiIIIiIiIiIIIiiIIiIIiiIiIiIIiIIiiiIIiiIiIiIIIiiIIiIIIiiIIiIiiiIiiiIIiiiiIiIIIiIiiiIIiiiiIiiIiiiIiiiIIIiIiiiIiiiIiii"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="link link-accent">http://links.nachop.xyz/@p2Kp</a
+					class="link link-accent text-ellipsis overflow-hidden break-all whitespace-pre-wrap"
+					>https://onlineminitools.com/long-url-maker?r=iIIIIiIIiiIiiiIiiIIiIIiiiIIiIIIIiIIiIIIiiIIiiIIIiIiIiIiIiIIIiiIiiIIiIIiiiiIiiiIiiiIIIiIiiiIiiiIiiIIiIiiiiIIIiIiiiIIIiIiiiIIIiiiiiIIIii...</a
 				>
-			</p>
+
+				<p class="text-center"><span class="highlight">Into</span> this:</p>
+
+				<p class="text-center">
+					<a
+						href="http://links.nachop.xyz/@p2Kp"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="link link-accent">http://links.nachop.xyz/@p2Kp</a
+					>
+				</p>
+			</div>
 		</div>
 	</section>
 </main>
