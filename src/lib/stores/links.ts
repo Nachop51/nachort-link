@@ -1,6 +1,6 @@
 import { LINK_FILTERS } from '$lib/constants'
 import type Link from '$lib/server/models/link'
-import { changeVisibility, deleteShortLink } from '$lib/services/api'
+import { changeVisibility, deleteShortLink, updateLink, updateShortLink } from '$lib/services/api'
 import type { LinkFilterValues } from '$lib/types'
 import toast from 'svelte-french-toast'
 import { writable } from 'svelte/store'
@@ -20,25 +20,28 @@ export const createLinkStore = (initialValue: Array<Link>) => {
 		search: ''
 	})
 
-	function deleteShorLink({ shortLink }: { shortLink: string }) {
-		deleteShortLink({ shortLink })
-			.then((deleted) => {
-				if (deleted === false) {
-					throw new Error('Error deleting link')
-				}
+	function deleteShorLink({ shortLink }: Pick<Link, 'shortLink'>) {
+		const deletePromise = async function () {
+			const deleted = await deleteShortLink({ shortLink })
 
-				linkStore.update((state) => ({
-					...state,
-					links: state.links.filter((link) => link.shortLink !== shortLink)
-				}))
-				toast.success('Link deleted successfully')
-			})
-			.catch(() => {
-				toast.error('Error deleting link, try again later.')
-			})
+			if (deleted === false) {
+				throw new Error('Error deleting link')
+			}
+
+			linkStore.update((state) => ({
+				...state,
+				links: state.links.filter((link) => link.shortLink !== shortLink)
+			}))
+		}
+
+		toast.promise(deletePromise(), {
+			loading: 'Deleting link...',
+			success: 'Link deleted successfully!',
+			error: 'Error deleting link, try again later.'
+		})
 	}
 
-	function updateVisibility({ shortLink, isPublic }: { shortLink: string; isPublic: boolean }) {
+	function updateVisibility({ shortLink, isPublic }: Pick<Link, 'shortLink' | 'isPublic'>) {
 		linkStore.update((state) => {
 			const link = state.links.find((link) => link.shortLink === shortLink)
 
@@ -52,28 +55,130 @@ export const createLinkStore = (initialValue: Array<Link>) => {
 			}
 		})
 
-		changeVisibility({ shortLink, isPublic })
-			.then((updated) => {
-				if (updated === false) {
-					throw new Error('Error updating visibility')
+		const updatePromise = async function () {
+			const updated = await changeVisibility({ shortLink, isPublic })
+
+			if (updated === true) {
+				return
+			}
+			linkStore.update((state) => {
+				const link = state.links.find((link) => link.shortLink === shortLink)
+
+				if (!link) return state
+
+				link.isPublic = !isPublic
+
+				return {
+					...state,
+					links: state.links.map((l) => (l.shortLink === shortLink ? link : l))
 				}
-				toast.success('Visibility updated successfully')
 			})
-			.catch(() => {
-				toast.error('Error updating visibility, try again later.')
-				linkStore.update((state) => {
-					const link = state.links.find((link) => link.shortLink === shortLink)
+			throw new Error('Error updating visibility')
+		}
 
-					if (!link) return state
+		toast.promise(updatePromise(), {
+			loading: 'Updating visibility...',
+			success: 'Visibility updated successfully',
+			error: 'Error updating visibility, try again later.'
+		})
+	}
 
-					link.isPublic = !isPublic
+	function editLink({
+		link: newLink,
+		shortLink
+	}: Pick<Link, 'link'> & { shortLink: Link['shortLink'] }) {
+		let previousLink: Link | null = null
+		linkStore.update((state) => {
+			const link = state.links.find((l) => l.shortLink === shortLink)
 
-					return {
-						...state,
-						links: state.links.map((l) => (l.shortLink === shortLink ? link : l))
-					}
-				})
+			if (!link) return state
+
+			previousLink = link
+			const newObj = { ...link, link: newLink }
+
+			return {
+				...state,
+				links: state.links.map((l) => (l.shortLink === shortLink ? newObj : l))
+			}
+		})
+
+		const updatePromise = async function () {
+			const updated = await updateLink({ link: newLink, shortLink })
+
+			if (updated === true) {
+				return
+			}
+			linkStore.update((state) => {
+				const link = state.links.find((l) => l.shortLink === shortLink)
+
+				if (!link) return state
+
+				if (previousLink) {
+					link.link = previousLink.link
+				}
+
+				return {
+					...state,
+					links: state.links.map((l) => (l.shortLink === shortLink ? link : l))
+				}
 			})
+			throw new Error('Error updating link')
+		}
+
+		toast.promise(updatePromise(), {
+			loading: 'Updating link...',
+			success: 'Link updated successfully',
+			error: 'Error updating link, try again later.'
+		})
+	}
+
+	function editShortLink({
+		shortLink,
+		newShortLink
+	}: Pick<Link, 'shortLink'> & { newShortLink: Link['shortLink'] }) {
+		let previousLink: Link | null = null
+		linkStore.update((state) => {
+			const link = state.links.find((l) => l.shortLink === shortLink)
+
+			if (!link) return state
+
+			previousLink = link
+			const newObj = { ...link, shortLink: newShortLink }
+
+			return {
+				...state,
+				links: state.links.map((l) => (l.shortLink === shortLink ? newObj : l))
+			}
+		})
+
+		const updatePromise = async function () {
+			const updated = await updateShortLink({ newShortLink, shortLink })
+
+			if (updated === true) {
+				return
+			}
+			linkStore.update((state) => {
+				const link = state.links.find((l) => l.shortLink === newShortLink)
+
+				if (!link) return state
+
+				if (previousLink) {
+					link.shortLink = previousLink.shortLink
+				}
+
+				return {
+					...state,
+					links: state.links.map((l) => (l.shortLink === newShortLink ? link : l))
+				}
+			})
+			throw new Error('Error updating link')
+		}
+
+		toast.promise(updatePromise(), {
+			loading: 'Updating shortLink...',
+			success: 'shortLink updated successfully!',
+			error: 'Error updating shortLink, try again later.'
+		})
 	}
 
 	function clearFilters() {
@@ -88,6 +193,8 @@ export const createLinkStore = (initialValue: Array<Link>) => {
 		...linkStore,
 		deleteShorLink,
 		updateVisibility,
+		editLink,
+		editShortLink,
 		clearFilters
 	}
 }

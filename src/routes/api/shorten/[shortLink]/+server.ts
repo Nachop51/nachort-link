@@ -1,3 +1,4 @@
+import { validatePartialLink } from '$lib/schemas/link'
 import Link from '$lib/server/models/link'
 import { getUser } from '$lib/server/models/user'
 import { json, type RequestHandler } from '@sveltejs/kit'
@@ -44,7 +45,7 @@ export const PATCH: RequestHandler = async ({ locals, request, params: { shortLi
 		return json({ error: 'Unauthorized' }, { status: 401 })
 	}
 
-	let body: { isPublic?: boolean }
+	let body: unknown
 
 	try {
 		body = await request.json()
@@ -52,27 +53,50 @@ export const PATCH: RequestHandler = async ({ locals, request, params: { shortLi
 		return json({ error: 'Invalid JSON' }, { status: 400 })
 	}
 
-	const { isPublic } = body
+	const result = validatePartialLink(body)
 
-	if (isPublic == null || typeof isPublic !== 'boolean') {
-		return json({ error: 'No valid `isPublic` boolean provided' }, { status: 400 })
+	if (!result.success) {
+		return json({ error: JSON.parse(result.error.message) }, { status: 400 })
 	}
 
-	const link = await Link.getCustom({ shortLink, handle: user.handle })
+	const { link: newLink, customShortlink } = result.data
 
-	if (link == null) {
+	if (newLink == null && customShortlink == null) {
+		return json({ error: 'No valid data provided' }, { status: 400 })
+	}
+
+	const linkDoc = await Link.getCustom({ shortLink, handle: user.handle })
+
+	if (linkDoc == null) {
 		return json({ error: 'Link not found' }, { status: 404 })
 	}
 
-	if (link.isPublic === isPublic) {
-		return json({ error: 'No change detected' }, { status: 400 })
+	if (customShortlink != null) {
+		const existing = await Link.getCustom({ shortLink: customShortlink, handle: user.handle })
+
+		if (existing != null) {
+			return json({ error: `Shortlink '${customShortlink}' already exists` }, { status: 400 })
+		}
 	}
 
-	const result = await Link.updatePublic({ _id: link._id, isPublic })
+	const custom = user?.isAdmin ? false : linkDoc.custom || shortLink != null
 
-	if (!result) {
+	const opResult = Link.update({
+		shortLink: customShortlink ?? shortLink,
+		link: newLink ?? linkDoc.link,
+		_id: linkDoc._id,
+		custom
+	})
+
+	if (opResult == null) {
 		return json({ error: 'Failed to update link' }, { status: 500 })
 	}
 
-	return json({ success: true })
+	return json({
+		_id: linkDoc._id.toString(),
+		ownerId: linkDoc.ownerId?.toString(),
+		shortLink: customShortlink ?? shortLink,
+		link: newLink ?? linkDoc.link,
+		isPublic: linkDoc.isPublic
+	})
 }

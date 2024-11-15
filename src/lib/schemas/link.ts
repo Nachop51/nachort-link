@@ -22,3 +22,7 @@ export const linkSchema = z.object({
 export function validateLink(data: unknown) {
 	return linkSchema.safeParse(data)
 }
+
+export function validatePartialLink(data: unknown) {
+	return linkSchema.partial().safeParse(data)
+}

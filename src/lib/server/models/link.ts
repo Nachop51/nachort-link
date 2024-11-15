@@ -53,6 +53,20 @@ export default class Link {
 		}
 	}
 
+	static async update({
+		_id,
+		shortLink,
+		link,
+		custom
+	}: Partial<Link> & Pick<Link, '_id' | 'custom'>) {
+		const result = await collections.links.updateOne(
+			{ _id: new ObjectId(_id) },
+			{ $set: { shortLink, link, custom } }
+		)
+
+		return result.acknowledged
+	}
+
 	static async getNonCustom({ shortLink }: Pick<Link, 'shortLink'>) {
 		let link: WithId<Link> | null = null
 

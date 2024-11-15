@@ -1,45 +1,16 @@
 <script lang="ts">
 	import type { PageData } from './$types'
-	import { page } from '$app/stores'
 	import { onDestroy } from 'svelte'
 
-	import CopyIcon from '$lib/components/icons/copy.svelte'
-	import EyeIcon from '$lib/components/icons/eye.svelte'
-	import CrossIcon from '$lib/components/icons/cross.svelte'
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
-	import { copyWithToast } from '$lib/utils/toast'
+	import LinkList from '$lib/components/link-list.svelte'
 
 	export let data: PageData
 
 	const { links, user } = data
 
 	const linkStore = createLinkStore(links)
-
-	async function handleChange({
-		shortLink,
-		isPublic,
-		e
-	}: {
-		shortLink: string
-		isPublic: boolean
-		e: Event & { currentTarget: HTMLInputElement }
-	}) {
-		if (!confirm('Are you sure you want to change the visibility of this link?')) {
-			if (e.currentTarget?.checked != null) {
-				e.currentTarget.checked = isPublic
-			}
-			return
-		}
-
-		linkStore.updateVisibility({ shortLink: shortLink, isPublic: !isPublic })
-	}
-
-	async function handleDelete({ shortLink }: { shortLink: string }) {
-		if (!confirm('Are you sure you want to delete this link?')) return
-
-		linkStore.deleteShorLink({ shortLink })
-	}
 
 	const unsubscribe = linkStore.subscribe((value) => searchHandler(value))
 
@@ -76,68 +47,25 @@
 		</section>
 
 		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
-			{#each $linkStore.filtered as { shortLink, link: original, isPublic, visits }}
-				<article class="card shadow-xl border border-gray-600 relative">
-					<form method="post" action="/dashboard?/"></form>
-					<div class="card-body py-6">
-						<h3 class="card-title text-primary">
-							<a target="_blank" rel="noopener noreferrer" class="link" href={shortLink}>
-								{shortLink}
-							</a>
-						</h3>
-						<p class="overflow-hidden text-ellipsis">{original}</p>
-
-						<div class="card-actions justify-between items-center mt-2">
-							<div class="tooltip tooltip-primary" data-tip="Total visits">
-								<span class="flex items-center gap-2">
-									<EyeIcon />
-									{visits ?? 0}
-								</span>
-							</div>
-
-							<div class="tooltip tooltip-primary" data-tip="Change the visibility of your link">
-								<label class="flex items-center">
-									<span class="mr-2">Public</span>
-									<input
-										class="checkbox checkbox-primary"
-										type="checkbox"
-										on:change={(e) => handleChange({ e, shortLink, isPublic })}
-										bind:checked={isPublic}
-									/>
-								</label>
-							</div>
-						</div>
-					</div>
-
-					<div class="flex absolute right-2 top-2">
-						<button
-							on:click={() => copyWithToast({ text: `${$page.url.origin}/${shortLink}` })}
-							class="btn btn-sm btn-circle btn-ghost"
-						>
-							<CopyIcon className="size-5" />
-						</button>
-						<button
-							formaction="/dashboard?/change"
-							on:click={async () => {
-								await handleDelete({ shortLink })
-							}}
-							class="btn btn-sm btn-circle btn-ghost"
-						>
-							<CrossIcon className="size-5" />
-						</button>
-					</div>
-				</article>
+			{#if $linkStore.filtered.length > 0}
+				<LinkList
+					links={$linkStore.filtered}
+					updateLinkVisibility={linkStore.updateVisibility}
+					deleteLink={linkStore.deleteShorLink}
+					editLink={linkStore.editLink}
+					editShortLink={linkStore.editShortLink}
+				/>
 			{:else}
 				<div class="text-center" style="grid-column: 1/-1;">
-					<h1 class="text-3xl font-semibold my-8 text-neutral-content">
+					<h2 class="text-3xl font-semibold mt-8 mb-3 text-neutral-content">
 						Oops there is no links with those filters.
-					</h1>
+					</h2>
 					<p class="text-lg text-neutral-content">Try using another combinations!</p>
 					<button class="btn btn-primary mt-4" on:click={linkStore.clearFilters}>
 						Reset filters
 					</button>
 				</div>
-			{/each}
+			{/if}
 		</section>
 	{:else}
 		<section

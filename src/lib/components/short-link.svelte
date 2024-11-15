@@ -218,10 +218,10 @@
 
 <style lang="postcss">
 	.wrapper {
-		@apply bg-base-100/50 px-8 py-6 text-center rounded-xl border border-neutral/70 w-full;
+		@apply bg-base-100/50 px-8 py-6 text-center rounded-xl border border-accent/70 w-full;
 	}
 
 	.tabs {
-		@apply w-full bg-base-100 flex flex-nowrap rounded-lg mb-4;
+		@apply w-full bg-base-200 flex flex-nowrap rounded-lg mb-4;
 	}
 </style>

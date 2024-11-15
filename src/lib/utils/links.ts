@@ -18,7 +18,11 @@ export const isValidShortLink = (shortLink: string) => {
 	)
 }
 
-export function isValidHttpUrl(link: string) {
+export function isValidHttpUrl(link: unknown): boolean {
+	if (typeof link !== 'string') {
+		return false
+	}
+
 	let url
 
 	try {

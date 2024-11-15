@@ -36,9 +36,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	const newLinkResult = await Link.create({
 		link,
-		isPublic: user ? isPublic : true,
-		ownerId: user?._id ?? null,
-		custom: customShortlink != null,
+		isPublic: user ? isPublic : true, // If user is not logged in, link is public
+		ownerId: user?._id ?? null, // If user is not logged in, ownerId is null
+		custom: customShortlink != null, // If custom shortlink is provided, link is custom
 		shortLink,
 		isAdmin: user?.isAdmin
 	})
