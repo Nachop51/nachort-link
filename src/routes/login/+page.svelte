@@ -12,7 +12,7 @@
 	}
 </script>
 
-<main class="min-h-size grid grid-cols-2 text-neutral">
+<main class="min-h-size grid grid-cols-2 text-neutral-content">
 	<section
 		class="flex flex-col items-start justify-center bg-base-100 px-6 sm:px-12 min-h-size pb-16 sm:pb-24"
 	>
@@ -38,7 +38,7 @@
 				</span>
 			</button>
 
-			<div class="divider divider-accent my-8 text-neutral">Or continue with</div>
+			<div class="divider divider-accent my-8 text-neutral-content">Or continue with</div>
 
 			<div class="text [&>button]:mb-2 w-full">
 				<button class="btn btn-primary text-base w-full" on:click={() => signIn('google')}>
@@ -56,7 +56,7 @@
 
 	<section class="grid place-content-center px-6 sm:px-12 gap-8 py-20 md:pb-24">
 		<div class="max-w-xl mx-auto w-full">
-			<h1 class="text-5xl font-extrabold">Shorten your links with Linkly in just one go!</h1>
+			<h1 class="text-5xl font-extrabold mb-4">Shorten your links with Linkly in just one go!</h1>
 
 			<div class="text-xl">
 				<p class="text-center"><span class="highlight">Transform</span> this weird thing:</p>

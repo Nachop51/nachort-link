@@ -27,7 +27,7 @@
 		<ShortLink {user} bind:updateLink />
 	</section>
 
-	<section class="mt-6 text-center">
+	<section class="my-6 text-center">
 		<header>
 			<h2 class="text-lg">Or try to shorten one of the links below:</h2>
 		</header>

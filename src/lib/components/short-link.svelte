@@ -196,10 +196,10 @@
 
 		<div class="mx-auto">
 			<p class="text-lg font-semibold">Try it now!</p>
-			<div class="my-4 py-2 px-4 border border-neutral rounded-xl">
+			<div class="my-4 py-2 px-4 border border-accent/40 rounded-xl">
 				<a
 					data-sveltekit-preload-data="off"
-					class="link link-secondary text-xl w-full"
+					class="link link-secondary text-xl w-full break-all whitespace-pre-wrap"
 					href={shortenedLink}
 					target="_blank"
 					rel="noopener noreferrer">{shortenedLink}</a
