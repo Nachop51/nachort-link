@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ShortLink from '$lib/components/short-link.svelte'
-	import LinkIcon from '$lib/components/icons/link.svelte'
+	import LinkIcon from '$lib/components/icons/link-arrow.svelte'
 	import type { PageServerData } from './$types'
 
 	export let data: PageServerData

@@ -6,7 +6,7 @@ export const load = (async ({ parent }) => {
 	const { user } = await parent()
 
 	if (user == null || user._id == null) {
-		throw redirect(302, '/')
+		throw redirect(303, '/login')
 	}
 
 	const links = await Link.getFromUser({ ownerId: user._id })

@@ -1,45 +1,36 @@
 <script lang="ts">
 	import type Link from '$lib/server/models/link'
-	import type { DeleteLink, EditLink, EditShortLink, UpdateLinkVisibility } from '$lib/types'
-	import ManageLink from './manage-link.svelte'
-
-	export let updateLinkVisibility: UpdateLinkVisibility
-	export let deleteLink: DeleteLink
-	export let editLink: EditLink
-	export let editShortLink: EditShortLink
+	import EyeIcon from './icons/eye.svelte'
 
 	export let links: Link[]
-
-	const handleVisibilityChange: UpdateLinkVisibility<{
-		e: Event & { currentTarget: HTMLInputElement }
-	}> = ({ shortLink, isPublic, e }) => {
-		console.log('here')
-
-		if (!confirm('Are you sure you want to change the visibility of this link?')) {
-			if (e.currentTarget?.checked != null) {
-				e.currentTarget.checked = isPublic
-			}
-			return
-		}
-
-		updateLinkVisibility({ shortLink: shortLink, isPublic: !isPublic })
-	}
-
-	const handleDelete: DeleteLink = ({ shortLink }) => {
-		if (!confirm('Are you sure you want to delete this link?')) return
-
-		deleteLink({ shortLink })
-	}
-
-	const handleLinkEdit: EditLink = ({ link, shortLink }) => {
-		editLink({ link, shortLink })
-	}
-
-	const handleShortEdit: EditShortLink = ({ shortLink, newShortLink }) => {
-		editShortLink({ shortLink, newShortLink })
-	}
 </script>
 
-{#each links as link}
-	<ManageLink {link} {handleVisibilityChange} {handleDelete} {handleLinkEdit} {handleShortEdit} />
+{#each links as { shortLink, link, visits }}
+	<article
+		class="bg-base-300 py-4 px-4 sm:px-6 rounded-lg w-full items-center text-xs sm:text-base"
+	>
+		<div class="w-[7ch]">
+			<a class="link link-primary font-bold text-xs sm:text-sm" href={shortLink}>
+				{shortLink}
+			</a>
+		</div>
+		<div class="divider divider-horizontal mx-0 sm:mx-1"></div>
+		<div class="flex-1 text-ellipsis overflow-hidden whitespace-nowrap">
+			{link}
+		</div>
+		<div class="divider divider-horizontal mx-1 sm:mx-1"></div>
+		<span class="w-8 inline-flex items-center gap-2">
+			<div class="flex-1">
+				<EyeIcon />
+			</div>
+			{visits ?? 0}
+		</span>
+	</article>
 {/each}
+
+<style lang="postcss">
+	article {
+		@apply grid items-center gap-2;
+		grid-template-columns: auto auto 1fr auto auto;
+	}
+</style>

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import UserProfile from '$lib/components/pages/user-profile.svelte'
-	import type { PageServerData } from './$types'
+	import type { PageData } from './$types'
 
-	export let data: PageServerData
+	export let data: PageData
 
 	const { user } = data
 </script>

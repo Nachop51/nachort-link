@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb'
 import { collections } from '../db'
 import type { Session } from '@auth/sveltekit'
 import type Link from './link'
+import type { UserProfileType } from '$lib/types'
 
 export default class User {
 	constructor(
@@ -77,7 +78,8 @@ export default class User {
 								}
 							}
 						},
-						linkCount: { $size: '$links' }
+						linkCount: { $size: '$links' },
+						totalVisits: { $sum: '$links.visits' }
 					}
 				},
 				{
@@ -98,12 +100,9 @@ export default class User {
 			image: result[0].image,
 			customLinks: result[0].links.filter((link: Link) => link.custom),
 			links: result[0].links.filter((link: Link) => !link.custom),
+			totalVisits: result[0].totalVisits,
 			linkCount: result[0].linkCount
-		} as Pick<User, '_id' | 'handle' | 'image'> & {
-			customLinks: Link[]
-			links: Link[]
-			linkCount: number
-		}
+		} as UserProfileType
 
 		return user
 	}

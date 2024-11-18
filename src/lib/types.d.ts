@@ -1,4 +1,5 @@
 import type { LINK_FILTERS } from './constants'
+import type User from './models/user'
 
 export enum THEME {
 	LIGHT = 'light',
@@ -15,3 +16,10 @@ export type EditLink = (link: Pick<Link, 'link' | 'shortLink'>) => void
 export type EditShortLink = (
 	link: Pick<Link, 'shortLink'> & { newShortLink: Link['shortLink'] }
 ) => void
+
+export type UserProfileType = Pick<User, '_id' | 'handle' | 'image'> & {
+	customLinks: Link[]
+	links: Link[]
+	linkCount: number
+	totalVisits: number
+}
