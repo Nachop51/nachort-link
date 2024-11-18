@@ -5,9 +5,17 @@ export const linkSchema = z.object({
 	link: z
 		.string()
 		.url()
-		.refine((url) => isValidHttpUrl(url), {
-			message: 'Invalid URL'
-		}),
+		.refine(
+			(url) => {
+				console.log({ url })
+				console.log({ isValidHttpUrl: isValidHttpUrl(url) })
+
+				return isValidHttpUrl(url)
+			},
+			{
+				message: 'Invalid URL'
+			}
+		),
 	isPublic: z.boolean().optional().default(true),
 	customShortlink: z
 		.string()
@@ -21,6 +29,10 @@ export const linkSchema = z.object({
 
 export function validateLink(data: unknown) {
 	return linkSchema.safeParse(data)
+}
+
+export function validateLinkInput(data: unknown) {
+	return linkSchema.pick({ link: true }).safeParse(data)
 }
 
 export function validatePartialLink(data: unknown) {

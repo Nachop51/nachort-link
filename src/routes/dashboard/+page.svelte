@@ -71,7 +71,7 @@
 		<section
 			class="-mt-8 sm:-mt-12 flex items-center flex-col justify-center min-h-[calc(100vh-132px)]"
 		>
-			<h1 class="text-5xl font-semibold my-8">You don't have any links yet.</h1>
+			<h2 class="text-5xl font-semibold my-8">You don't have any links yet.</h2>
 			<p class="text-lg text-neutral-content">Try creating one here using the button below!</p>
 			<a href="/" class="btn btn-primary mt-4">Create a link</a>
 		</section>

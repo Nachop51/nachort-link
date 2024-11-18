@@ -8,7 +8,9 @@
 	import CrossIcon from '$lib/components/icons/cross.svelte'
 	import EditIcon from '$lib/components/icons/edit-icon.svelte'
 	import type { DeleteLink, EditLink, EditShortLink, UpdateLinkVisibility } from '$lib/types'
-	import { isValidHttpUrl, isValidShortLink } from '$lib/utils/links'
+	import { isValidShortLink } from '$lib/utils/links'
+	import toast from 'svelte-french-toast'
+	import { validateLinkInput } from '$lib/schemas/link'
 
 	export let handleVisibilityChange: UpdateLinkVisibility<{
 		e: Event & { currentTarget: HTMLInputElement }
@@ -30,11 +32,11 @@
 		inputRef.focus()
 	}
 
-	function setIsEditingLink(value = false) {
+	function setIsEditingLink(value: boolean) {
 		isEditingLink = value
 	}
 
-	function setIsEditingShortLink(value = false) {
+	function setIsEditingShortLink(value: boolean) {
 		isEditingShortLink = value
 	}
 
@@ -43,8 +45,18 @@
 			isEditingLink = false
 			return
 		}
-		if (isEditingLink && isValidHttpUrl(newLink)) {
-			handleLinkEdit({ shortLink: link.shortLink, link: newLink })
+
+		if (isEditingLink) {
+			const result = validateLinkInput({ link: JSON.stringify(newLink) })
+
+			console.log({ result })
+
+			if (result.success) {
+				handleLinkEdit({ shortLink: link.shortLink, link: result.data.link })
+			} else {
+				toast.error('Please enter a valid URL', { duration: 3000 })
+				newLink = link.link
+			}
 		}
 
 		isEditingLink = false
@@ -55,11 +67,16 @@
 			isEditingShortLink = false
 			return
 		}
-		if (isEditingShortLink && isValidShortLink(newShortLink)) {
-			handleShortEdit({ shortLink: link.shortLink, newShortLink })
+		if (isEditingShortLink) {
+			if (isValidShortLink(newShortLink)) {
+				handleShortEdit({ shortLink: link.shortLink, newShortLink })
+			} else {
+				toast.error('Please enter a valid short link', { duration: 3000 })
+			}
 		}
 
 		isEditingShortLink = false
+		newShortLink = link.shortLink
 	}
 </script>
 

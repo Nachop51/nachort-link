@@ -19,7 +19,7 @@ export default {
 					'secondary-content': '#ffffff',
 					accent: '#ef4484',
 					'accent-content': '#fff',
-					neutral: '#3d4451',
+					neutral: '#f7effd',
 					'--shadow': '#00000030',
 					'neutral-content': '#130b21',
 					'base-100': '#f7effd',

@@ -81,8 +81,6 @@ export const PATCH: RequestHandler = async ({ locals, request, params: { shortLi
 
 	const custom = user?.isAdmin === true ? false : linkDoc.custom || shortLink != null
 
-	console.log({ custom })
-
 	const opResult = Link.update({
 		shortLink: customShortlink ?? shortLink,
 		link: newLink ?? linkDoc.link,
