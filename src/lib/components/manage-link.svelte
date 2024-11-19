@@ -80,7 +80,7 @@
 
 <article class="card shadow-xl border border-gray-600 relative">
 	<div class="card-body py-6">
-		<h3 class="card-title text-primary">
+		<h2 class="card-title text-primary">
 			{#if isEditingShortLink}
 				<input
 					bind:this={inputRef}
@@ -95,7 +95,7 @@
 					{link.shortLink}
 				</a>
 			{/if}
-		</h3>
+		</h2>
 
 		{#if isEditingLink}
 			<input
@@ -141,7 +141,7 @@
 	<!-- Top right side buttons (Actions) -->
 	<div class="flex absolute right-2 top-2">
 		<div class="dropdown dropdown-bottom dropdown-end dropdown-hover">
-			<div tabindex="0" role="button" class="btn btn-sm btn-circle btn-ghost">
+			<div tabindex="0" role="button" class="btn btn-sm btn-circle btn-ghost" title="Edit menu">
 				<EditIcon />
 			</div>
 			<ul class="dropdown-content menu bg-base-100 rounded-box z-[1] w-max p-2 shadow">
@@ -158,6 +158,7 @@
 			<button
 				on:click={() => copyWithToast({ text: `${$page.url.origin}/${link.shortLink}` })}
 				class="btn btn-sm btn-circle btn-ghost"
+				title="Copy link"
 			>
 				<CopyIcon className="size-5" />
 			</button>
@@ -167,6 +168,7 @@
 			<button
 				on:click={() => handleDelete({ shortLink: link.shortLink })}
 				class="btn btn-sm btn-circle btn-ghost"
+				title="Delete link"
 			>
 				<CrossIcon className="size-5" />
 			</button>

@@ -11,8 +11,6 @@ export const load = (async ({ parent }) => {
 
 	const userProfile = await User.getProfile({ handle: user.handle })
 
-	console.log({ userProfile })
-
 	if (userProfile == null) {
 		throw error(404, 'User not found')
 	}

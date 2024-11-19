@@ -43,7 +43,7 @@ export default {
 				dark: {
 					...themes.dark,
 					primary: '#6c51e2',
-					'primary-content': '#d5d2e2',
+					'primary-content': '#f4f2fd',
 					secondary: '#BC52E3',
 					'secondary-content': '#ffffff',
 					accent: '#aeaaff',

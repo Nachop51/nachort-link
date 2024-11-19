@@ -25,7 +25,12 @@
 </script>
 
 <label class="swap swap-rotate">
-	<input on:change={handleChangeTheme} type="checkbox" class="theme-controller" />
+	<input
+		on:change={handleChangeTheme}
+		type="checkbox"
+		class="theme-controller"
+		aria-label="Theme controller button"
+	/>
 
 	<svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
 		><path

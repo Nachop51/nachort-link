@@ -38,6 +38,7 @@
 				<select
 					class="select select-primary w-min max-w-xs join-item"
 					bind:value={$linkStore.filterBy}
+					title="Filter by"
 				>
 					{#each Object.values(LINK_FILTERS) as filter}
 						<option value={filter}>{filter}</option>

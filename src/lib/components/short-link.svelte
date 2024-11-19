@@ -172,7 +172,7 @@
 
 	<p
 		class="mt-4 text-sm font-semibold"
-		class:text-neutral-500={!success && !formError}
+		class:text-neutral-400={!success && !formError}
 		class:text-error={formError != null}
 		class:text-success={formError == null && success}
 	>
