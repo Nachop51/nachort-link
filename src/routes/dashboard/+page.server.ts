@@ -5,7 +5,7 @@ import Link from '$lib/server/models/link'
 export const load = (async ({ parent }) => {
 	const { user } = await parent()
 
-	if (user == null || user?._id == null) {
+	if (user == null || user._id == null) {
 		throw redirect(302, '/')
 	}
 

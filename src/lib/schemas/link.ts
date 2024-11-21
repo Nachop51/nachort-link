@@ -7,9 +7,6 @@ export const linkSchema = z.object({
 		.url()
 		.refine(
 			(url) => {
-				console.log({ url })
-				console.log({ isValidHttpUrl: isValidHttpUrl(url) })
-
 				return isValidHttpUrl(url)
 			},
 			{

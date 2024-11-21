@@ -6,7 +6,7 @@ import { validateHandle } from '$lib/schemas/user'
 export const load = (async ({ parent }) => {
 	const { user } = await parent()
 
-	if (user == null || user?.handle != null) {
+	if (user == null || user.handle != null) {
 		throw redirect(302, '/')
 	}
 

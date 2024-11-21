@@ -26,10 +26,6 @@ export default {
 					'base-200': '#f3e7fd',
 					'base-300': '#e2d5fd',
 					'base-content': '#130b21',
-
-					error: '#ff5b5b',
-					success: '#00d68f',
-
 					'.bg-gradient': {
 						position: 'fixed',
 						top: '0',
@@ -59,10 +55,6 @@ export default {
 					'base-200': '#140f1e',
 					'base-300': '#1e1933',
 					'base-content': '#cbd5e1',
-
-					error: '#ff5b5b',
-					success: '#00d68f',
-
 					'.bg-gradient': {
 						position: 'fixed',
 						top: '0',

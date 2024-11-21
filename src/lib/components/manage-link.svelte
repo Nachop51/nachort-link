@@ -49,8 +49,6 @@
 		if (isEditingLink) {
 			const result = validateLinkInput({ link: JSON.stringify(newLink) })
 
-			console.log({ result })
-
 			if (result.success) {
 				handleLinkEdit({ shortLink: link.shortLink, link: result.data.link })
 			} else {
@@ -109,7 +107,7 @@
 				placeholder="type new link"
 			/>
 		{:else}
-			<p on:dblclick={() => (isEditingLink = true)} class="overflow-hidden text-ellipsis">
+			<p on:dblclick={() => setIsEditingLink(true)} class="overflow-hidden text-ellipsis">
 				{link.link}
 			</p>
 		{/if}
@@ -120,7 +118,7 @@
 			<div class="tooltip tooltip-primary" data-tip="Total visits">
 				<span class="flex items-center gap-2">
 					<EyeIcon />
-					{link?.visits ?? 0}
+					{link.visits ?? 0}
 				</span>
 			</div>
 

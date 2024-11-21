@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { collections } from '../db'
 import type { Session } from '@auth/sveltekit'
+import type Link from './link'
 
 export default class User {
 	constructor(
@@ -9,6 +10,7 @@ export default class User {
 		public name?: string,
 		public handle?: string,
 		public password?: string,
+		public image?: string,
 		public isAdmin?: boolean
 	) {}
 
@@ -35,11 +37,76 @@ export default class User {
 		)
 	}
 
-	// static async getByHandle({ handle }: Pick<User, 'handle'>) {
-	// 	return await collections.users.findOne({
-	// 		handle
-	// 	})
-	// }
+	static async getProfile({ handle }: Pick<User, 'handle'>) {
+		const result = await collections.users
+			.aggregate([
+				{ $match: { handle } },
+				{
+					$lookup: {
+						from: 'links',
+						let: { userId: '$_id' },
+						pipeline: [
+							{
+								$match: {
+									$expr: { $and: [{ $eq: ['$ownerId', '$$userId'] }, { $eq: ['$isPublic', true] }] }
+								}
+							}
+						],
+						as: 'links'
+					}
+				},
+				{
+					$addFields: {
+						_id: { $toString: '$_id' },
+						links: {
+							$map: {
+								input: '$links',
+								as: 'link',
+								in: {
+									$mergeObjects: [
+										'$$link',
+										{
+											_id: {
+												$toString: '$$link._id'
+											},
+											ownerId: {
+												$toString: '$$link.ownerId'
+											}
+										}
+									]
+								}
+							}
+						},
+						linkCount: { $size: '$links' }
+					}
+				},
+				{
+					$project: {
+						password: 0
+					}
+				}
+			])
+			.toArray()
+
+		if (result == null || result.length === 0) {
+			return null
+		}
+
+		const user = {
+			_id: result[0]._id,
+			handle: result[0].handle,
+			image: result[0].image,
+			customLinks: result[0].links.filter((link: Link) => link.custom),
+			links: result[0].links.filter((link: Link) => !link.custom),
+			linkCount: result[0].linkCount
+		} as Pick<User, '_id' | 'handle' | 'image'> & {
+			customLinks: Link[]
+			links: Link[]
+			linkCount: number
+		}
+
+		return user
+	}
 
 	static async getHandle({ _id }: Pick<User, '_id'>) {
 		const user = await collections.users.findOne(
@@ -72,7 +139,7 @@ export const getUser = async ({ locals }: { locals: App.Locals }) => {
 		return null
 	}
 
-	if (session == null || session?.user == null) {
+	if (session == null || session.user == null) {
 		return null
 	}
 

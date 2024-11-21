@@ -9,7 +9,7 @@
 
 		if (preferredTheme) {
 			theme = preferredTheme as THEME
-		} else if (window?.matchMedia('prefers-color-scheme: light').matches) {
+		} else if (window.matchMedia('prefers-color-scheme: light').matches) {
 			theme = THEME.LIGHT
 		}
 

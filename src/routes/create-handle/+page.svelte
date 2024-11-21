@@ -19,7 +19,7 @@
 	let loading = false
 
 	$: isValid = validateHandle({ handle }).success
-	$: isTouched = handle?.length > 0
+	$: isTouched = handle.length > 0
 	$: isTaken = isValid && !isAvailable && !loading
 
 	function handleChange() {

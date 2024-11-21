@@ -4,7 +4,7 @@
 
 	import { LINK_FILTERS } from '$lib/constants'
 	import { createLinkStore, searchHandler } from '$lib/stores/links'
-	import LinkList from '$lib/components/link-list.svelte'
+	import ManageLinkList from '$lib/components/manage-link-list.svelte'
 
 	export let data: PageData
 
@@ -48,7 +48,7 @@
 
 		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
 			{#if $linkStore.filtered.length > 0}
-				<LinkList
+				<ManageLinkList
 					links={$linkStore.filtered}
 					updateLinkVisibility={linkStore.updateVisibility}
 					deleteLink={linkStore.deleteShorLink}
