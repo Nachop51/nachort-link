@@ -47,9 +47,9 @@
 		}
 
 		if (isEditingLink) {
-			const result = validateLinkInput({ link: JSON.stringify(newLink) })
+			const result = validateLinkInput({ link: newLink })
 
-			if (result.success) {
+			if (result.success && !newLink.includes(' ')) {
 				handleLinkEdit({ shortLink: link.shortLink, link: result.data.link })
 			} else {
 				toast.error('Please enter a valid URL', { duration: 3000 })
@@ -146,10 +146,10 @@
 			</div>
 			<ul class="dropdown-content menu bg-base-100 rounded-box z-[1] w-max p-2 shadow">
 				<li>
-					<button on:click={() => setIsEditingLink(true)}> Edit link </button>
+					<button on:click={() => setIsEditingShortLink(true)}>Customize shortlink</button>
 				</li>
 				<li>
-					<button on:click={() => setIsEditingShortLink(true)}>Customize shortlink</button>
+					<button on:click={() => setIsEditingLink(true)}> Edit link </button>
 				</li>
 			</ul>
 		</div>

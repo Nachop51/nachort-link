@@ -52,10 +52,10 @@ export async function createShortlink({
 		throw new Error(json.error)
 	} catch (e) {
 		if (e instanceof Error) {
-			throw Error(e.message)
+			return e.message
 		}
 
-		throw Error('Failed to create link, please try again later.')
+		return 'Unknown error, please try again later.'
 	}
 }
 

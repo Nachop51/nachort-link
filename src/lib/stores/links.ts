@@ -87,42 +87,25 @@ export const createLinkStore = (initialValue: Array<Link>) => {
 		link: newLink,
 		shortLink
 	}: Pick<Link, 'link'> & { shortLink: Link['shortLink'] }) {
-		let previousLink: Link | null = null
-		linkStore.update((state) => {
-			const link = state.links.find((l) => l.shortLink === shortLink)
-
-			if (!link) return state
-
-			previousLink = link
-			const newObj = { ...link, link: newLink }
-
-			return {
-				...state,
-				links: state.links.map((l) => (l.shortLink === shortLink ? newObj : l))
-			}
-		})
-
 		const updatePromise = async function () {
-			const updated = await updateLink({ link: newLink, shortLink })
+			const success = await updateLink({ link: newLink, shortLink })
 
-			if (updated === true) {
-				return
+			if (success === false) {
+				throw new Error('Error updating link')
 			}
+
 			linkStore.update((state) => {
 				const link = state.links.find((l) => l.shortLink === shortLink)
 
 				if (!link) return state
 
-				if (previousLink) {
-					link.link = previousLink.link
-				}
+				const newObj = { ...link, link: newLink }
 
 				return {
 					...state,
-					links: state.links.map((l) => (l.shortLink === shortLink ? link : l))
+					links: state.links.map((l) => (l.shortLink === shortLink ? newObj : l))
 				}
 			})
-			throw new Error('Error updating link')
 		}
 
 		toast.promise(updatePromise(), {
@@ -136,42 +119,25 @@ export const createLinkStore = (initialValue: Array<Link>) => {
 		shortLink,
 		newShortLink
 	}: Pick<Link, 'shortLink'> & { newShortLink: Link['shortLink'] }) {
-		let previousLink: Link | null = null
-		linkStore.update((state) => {
-			const link = state.links.find((l) => l.shortLink === shortLink)
-
-			if (!link) return state
-
-			previousLink = link
-			const newObj = { ...link, shortLink: newShortLink }
-
-			return {
-				...state,
-				links: state.links.map((l) => (l.shortLink === shortLink ? newObj : l))
-			}
-		})
-
 		const updatePromise = async function () {
 			const updated = await updateShortLink({ newShortLink, shortLink })
 
-			if (updated === true) {
-				return
+			if (updated === false) {
+				throw new Error('Error updating link')
 			}
+
 			linkStore.update((state) => {
-				const link = state.links.find((l) => l.shortLink === newShortLink)
+				const link = state.links.find((l) => l.shortLink === shortLink)
 
 				if (!link) return state
 
-				if (previousLink) {
-					link.shortLink = previousLink.shortLink
-				}
+				const newObj = { ...link, shortLink: newShortLink }
 
 				return {
 					...state,
-					links: state.links.map((l) => (l.shortLink === newShortLink ? link : l))
+					links: state.links.map((l) => (l.shortLink === shortLink ? newObj : l))
 				}
 			})
-			throw new Error('Error updating link')
 		}
 
 		toast.promise(updatePromise(), {

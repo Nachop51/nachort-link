@@ -5,22 +5,13 @@ export const linkSchema = z.object({
 	link: z
 		.string()
 		.url()
-		.refine(
-			(url) => {
-				return isValidHttpUrl(url)
-			},
-			{
-				message: 'Invalid URL'
-			}
-		),
+		.refine((url) => isValidHttpUrl(url), { message: 'Invalid URL' }),
 	isPublic: z.boolean().optional().default(true),
 	customShortlink: z
 		.string()
 		.min(2)
 		.max(10)
-		.refine((shortLink) => isValidShortLink(shortLink), {
-			message: 'Invalid shortlink'
-		})
+		.refine((shortLink) => isValidShortLink(shortLink), { message: 'Invalid shortlink' })
 		.optional()
 })
 
