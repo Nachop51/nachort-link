@@ -10,7 +10,12 @@
 		class="bg-base-300 py-4 px-4 sm:px-6 rounded-lg w-full items-center text-xs sm:text-base"
 	>
 		<div class="w-[7ch]">
-			<a class="link link-primary font-bold text-xs sm:text-sm" href={shortLink}>
+			<a
+				class="link link-primary font-bold text-xs sm:text-sm"
+				href={shortLink}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
 				{shortLink}
 			</a>
 		</div>

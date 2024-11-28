@@ -15,6 +15,10 @@ html {
 	font-optical-sizing: auto;
 }
 
+::selection {
+	@apply bg-primary text-white;
+}
+
 .min-h-size {
 	@apply min-h-[calc(100dvh-4rem)] sm:min-h-[calc(100dvh-6rem)];
 }

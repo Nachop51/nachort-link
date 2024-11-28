@@ -23,9 +23,9 @@
 	<title>{user.handle}'s Dashboard</title>
 </svelte:head>
 
-<main class="px-4">
+<main class="px-4 sm:px-6">
 	{#if $linkStore.links.length > 0}
-		<h1 class="text-center text-5xl font-semibold mb-10">Manage your links</h1>
+		<h1 class="text-center text-5xl font-semibold mb-10 text-accent">Manage your links</h1>
 
 		<section class="flex justify-center">
 			<div class="join">
@@ -33,10 +33,10 @@
 					bind:value={$linkStore.search}
 					type="text"
 					placeholder="Search for a link..."
-					class="input input-bordered input-primary w-full max-w-xs join-item"
+					class="input input-bordered input-accent w-full max-w-xs join-item"
 				/>
 				<select
-					class="select select-primary w-min max-w-xs join-item"
+					class="select select-accent w-min max-w-xs join-item"
 					bind:value={$linkStore.filterBy}
 					title="Filter by"
 				>
@@ -47,7 +47,7 @@
 			</div>
 		</section>
 
-		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-8">
+		<section class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 py-8">
 			{#if $linkStore.filtered.length > 0}
 				<ManageLinkList
 					links={$linkStore.filtered}

@@ -34,7 +34,7 @@
 	<div class="flex items-center gap-2">
 		<ThemeHandler />
 		{#if user != null}
-			<a href="/dashboard" class="btn btn-sm btn-ghost text-lg"> Dashboard </a>
+			<a href="/dashboard" class="btn btn-sm btn-ghost text-lg hidden sm:block"> Dashboard </a>
 			<div class="dropdown dropdown-end max-h-8">
 				<button tabindex="0" class="btn btn-sm btn-ghost btn-circle avatar w-8 h-8">
 					<div class="w-full h-full border border-gray-600 rounded-full">
@@ -43,8 +43,11 @@
 				</button>
 				<ul
 					role="menu"
-					class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+					class="menu sm:menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
 				>
+					<li class="sm:hidden">
+						<a href="/dashboard" class="justify-between"> Dashboard </a>
+					</li>
 					<li>
 						<a href="/profile" class="justify-between">
 							Profile

@@ -78,7 +78,7 @@
 	}
 </script>
 
-<article class="card shadow-xl border border-gray-600 relative">
+<article class="card shadow-xl border border-primary relative">
 	<div class="card-body py-6">
 		<h2 class="card-title text-primary">
 			{#if isEditingShortLink}
@@ -123,11 +123,14 @@
 			</div>
 
 			<!-- Link visibility -->
-			<div class="tooltip tooltip-primary" data-tip="Change the visibility of your link">
+			<div
+				class="tooltip tooltip-primary tooltip-left"
+				data-tip="Change the visibility of your link"
+			>
 				<label class="flex items-center">
 					<span class="mr-2">Public</span>
 					<input
-						class="checkbox checkbox-primary"
+						class="checkbox checkbox-accent"
 						type="checkbox"
 						on:change={(e) =>
 							handleVisibilityChange({ shortLink: link.shortLink, isPublic: link.isPublic, e })}
@@ -154,11 +157,11 @@
 			</ul>
 		</div>
 
-		<div class="tooltip" data-tip="Copy link">
+		<div class="tooltip" data-tip="Copy short link">
 			<button
 				on:click={() => copyWithToast({ text: `${$page.url.origin}/${link.shortLink}` })}
 				class="btn btn-sm btn-circle btn-ghost"
-				title="Copy link"
+				title="Copy short link"
 			>
 				<CopyIcon className="size-5" />
 			</button>
