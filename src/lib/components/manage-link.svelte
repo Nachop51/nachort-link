@@ -107,7 +107,11 @@
 				placeholder="type new link"
 			/>
 		{:else}
-			<p on:dblclick={() => setIsEditingLink(true)} class="overflow-hidden text-ellipsis">
+			<p
+				on:dblclick={() => setIsEditingLink(true)}
+				class="overflow-hidden text-ellipsis"
+				title={link.link}
+			>
 				{link.link}
 			</p>
 		{/if}
